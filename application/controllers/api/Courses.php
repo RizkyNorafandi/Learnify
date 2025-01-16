@@ -4,18 +4,18 @@ use chriskacerguis\RestServer\RestController;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class CourseAPI extends RestController
+class Courses extends RestController
 {
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->database();
-        $this->load->model('course_model');
+        $this->load->model('courseModel');
     }
 
-    public function index_get($id = 0)
-    {
+    public function index_get() {
+
+        $id = $this->get('id');
 
         $check_data = $this->db->get_where('course', ['courseID' => $id])->row_array();
 
@@ -79,7 +79,7 @@ class CourseAPI extends RestController
             return;
         }
         // Tambahkan data ke database
-        if ($this->course_model->insertCourse($data)) {
+        if ($this->courseModel->insertCourse($data)) {
             $this->response([
                 'status' => true,
                 'message' => 'Course berhasil ditambahkan!'
@@ -104,7 +104,7 @@ class CourseAPI extends RestController
         ];
 
         // Validasi data di model
-        if (!$this->CourseModel->validate_course_data($data)) {
+        if (!$this->courseModel->validate_course_data($data)) {
             $this->response([
                 'status' => false,
                 'message' => $this->form_validation->error_array()
@@ -113,7 +113,7 @@ class CourseAPI extends RestController
         }
 
         // Update data di database
-        if ($this->CourseModel->update_course($id, $data)) {
+        if ($this->courseModel->update_course($id, $data)) {
             $this->response([
                 'status' => true,
                 'message' => 'Course berhasil diperbarui!'

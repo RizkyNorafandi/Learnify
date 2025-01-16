@@ -5,6 +5,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Course_Detail extends CI_Controller {
 
     public function index() {
+        $courseID = $this->input->get('id');
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'http://localhost/learning/api/courses?id='.$courseID);
+        
         $templates = array(
             'head' => 'Templates/User/head',
             'navbar' => '',
@@ -15,6 +20,8 @@ class Course_Detail extends CI_Controller {
 
         $this->load->view('master_user', $templates);
     }
+
+
 
 }
 

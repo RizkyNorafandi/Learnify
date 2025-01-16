@@ -4,8 +4,7 @@ use SebastianBergmann\Environment\Console;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Course_model extends CI_Model
-{
+class courseModel extends CI_Model {
 
     public function __construct()
     {

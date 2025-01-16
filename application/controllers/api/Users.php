@@ -8,6 +8,8 @@ class Users extends RestController
 
     public function __construct() {
         parent::__construct();
+
+        $this->load->model('userModel');
     }
 
     // Endpoint: GET /users
@@ -109,11 +111,8 @@ class Users extends RestController
         log_message('info', 'Login attempt started.');
 
         // Ambil input dari JSON body jika ada
-        $data = json_decode(file_get_contents('php://input'), true);
-        if ($data) {
-            $_POST['email'] = $data['email'];
-            $_POST['password'] = $data['password'];
-        }
+        $input = json_decode(file_get_contents('php://input'), true);
+        $this->form_validation->set_data($input);
 
         // Aturan validasi
         $this->form_validation->set_rules('email', 'email', 'required|valid_email');
@@ -131,7 +130,7 @@ class Users extends RestController
 
             log_message('info', 'Email: ' . $email);
 
-            $user = $this->User_model->login($email, $password);
+            $user = $this->userModel->login($email, $password);
 
             if ($user) {
                 $this->session->set_userdata('userID', $user->userID);
