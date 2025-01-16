@@ -1,3 +1,5 @@
+
+
 <section class="p-6 bg-gray-100 flex-1">
     <h1 class="text-2xl font-bold mb-6"><?= $title ?></h1>
 

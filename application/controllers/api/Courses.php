@@ -12,7 +12,6 @@ class CourseAPI extends RestController
         parent::__construct();
         $this->load->database();
         $this->load->model('course_model');
-        $this->load->library('form_validation');
     }
 
     public function index_get($id = 0)
@@ -47,6 +46,10 @@ class CourseAPI extends RestController
             'coursePrice' => $this->post('coursePrice'),
             'courseTags' => $this->post('courseTags'),
         ];
+
+        $input = json_decode(trim(file_get_contents('php://input')), true);
+
+        $this->form_validation->set_data($input);
 
         $this->form_validation->set_rules('courseName', 'Nama Course', 'required|trim|max_length[100]');
         $this->form_validation->set_rules('classCategory', 'Kategori', 'required|trim|max_length[50]');

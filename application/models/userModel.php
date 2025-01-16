@@ -14,7 +14,7 @@ class User_model extends CI_Model
     public function register($data)
     {
         // Hash password sebelum menyimpan
-        $data['userPassword'] = password_hash($data['userPassword'], PASSWORD_DEFAULT);
+        $data['userPassword'] = password_hash($data['userPassword'], PASSWORD_BCRYPT);
         return $this->db->insert('user', $data);
     }
 
