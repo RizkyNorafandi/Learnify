@@ -55,11 +55,19 @@ $route['translate_uri_dashes'] = FALSE;
 
 
 
-$route['auth/login'] = 'api/auth/login'; // Rute untuk login
-$route['auth/logout'] = 'api/auth/logout'; // Rute untuk logout
+// $route['auth/login'] = 'api/auth/login'; // Rute untuk login
+// $route['auth/logout'] = 'api/auth/logout'; // Rute untuk logout
 
-$route['login'] = 'user/user';
+$route['login'] = 'User/Auth';
+$route['authLogin'] = 'User/Auth/login_submit';
+
+
 $route['register'] = 'user/register';
+$route['register/submit'] = 'user/register/submit_post';
+
+$route['Home'] = 'User/Home/';
+
+$route['registerAPI'] = 'api/registerAPI/';
 
 
 $route['admin/login'] = 'dashboard/auth';

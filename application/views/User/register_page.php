@@ -7,9 +7,21 @@
             <p class="text-xs mt-4 text-[#002D74]">Create your account and start learning with us!</p>
 
             <!-- Tampilkan pesan error jika ada -->
-            <div id="error-message" class="hidden bg-red-200 text-red-800 p-2 rounded mb-4"></div>
+            <!-- Tampilkan pesan error -->
+            <?php if ($this->session->flashdata('error')): ?>
+                <div class="bg-red-200 text-red-800 p-2 rounded mb-4">
+                    <?php echo $this->session->flashdata('error'); ?>
+                </div>
+            <?php endif; ?>
 
-            <form id="registerForm" method="post" action="php" class="flex flex-col gap-4">
+            <!-- Tampilkan pesan sukses -->
+            <?php if ($this->session->flashdata('success')): ?>
+                <div class="bg-green-200 text-green-800 p-2 rounded mb-4">
+                    <?php echo $this->session->flashdata('success'); ?>
+                </div>
+            <?php endif; ?>
+
+            <form id="registerForm" method="post" action="<?= base_url('register/submit') ?>" class="flex flex-col gap-4">
                 <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
                 <input class="p-2 mt-4 rounded-xl border" type="text" id="userFullname" name="userFullname" placeholder="Full Name" required>
                 <input class="p-2 rounded-xl border" type="email" id="userEmail" name="userEmail" placeholder="Email" required>
@@ -32,50 +44,3 @@
         </div>
     </div>
 </section>
-<script>
-    // Handle form submission
-    document.getElementById('registerForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-
-        // Collect form data
-        const formData = {
-            userFullname: document.getElementById('userFullname').value,
-            userEmail: document.getElementById('userEmail').value,
-            userPhone: document.getElementById('userPhone').value,
-            userPassword: document.getElementById('userPassword').value,
-            reenterPassword: document.getElementById('reenterPassword').value,
-        };
-
-        // Check if passwords match
-        if (formData.userPassword !== formData.reenterPassword) {
-            document.getElementById('error-message').classList.remove('hidden');
-            document.getElementById('error-message').innerText = 'Passwords do not match';
-            return;
-        }
-
-        try {
-            // Send POST request to API
-            const response = await fetch('http://localhost/learnify/registerAPI', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert('Registration successful');
-                window.location.href = '/login'; // Redirect to login page
-            } else {
-                document.getElementById('error-message').classList.remove('hidden');
-                document.getElementById('error-message').innerText = result.message || 'Failed to register';
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            document.getElementById('error-message').classList.remove('hidden');
-            document.getElementById('error-message').innerText = 'An error occurred. Please try again later.';
-        }
-    });
-</script>

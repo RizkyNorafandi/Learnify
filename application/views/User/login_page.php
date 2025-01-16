@@ -6,13 +6,25 @@
             <h2 class="font-bold text-2xl text-[#002D74]">Login</h2>
             <p class="text-xs mt-4 text-[#002D74]">If you are already a member, easily log in</p>
 
-            <!-- Tampilkan pesan error jika ada -->
-            <div id="error-message" class="hidden bg-red-200 text-red-800 p-2 rounded mb-4"></div>
+            <!-- Tampilkan pesan error -->
+            <?php if ($this->session->flashdata('error')): ?>
+                <div class="bg-red-200 text-red-800 p-2 rounded mb-4">
+                    <?php echo $this->session->flashdata('error'); ?>
+                </div>
+            <?php endif; ?>
 
-            <form id="loginForm" method="post" action="php" class="flex flex-col gap-4">
-                <input class="p-2 mt-8 rounded-xl border" type="email" id="adminEmail" name="adminEmail" placeholder="Email" required>
+            <!-- Tampilkan pesan sukses -->
+            <?php if ($this->session->flashdata('success')): ?>
+                <div class="bg-green-200 text-green-800 p-2 rounded mb-4">
+                    <?php echo $this->session->flashdata('success'); ?>
+                </div>
+            <?php endif; ?>
+
+            <form id="loginForm" method="post" action="<?php echo base_url('authLogin') ?>" class="flex flex-col gap-4">
+                <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
+                <input class="p-2 mt-8 rounded-xl border" type="email" id="userEmail" name="userEmail" placeholder="Email" required>
                 <div class="relative">
-                    <input class="p-2 rounded-xl border w-full" type="password" id="adminPassword" name="adminPassword" placeholder="Password" required>
+                    <input class="p-2 rounded-xl border w-full" type="password" id="userPassword" name="userPassword" placeholder="Password" required>
                 </div>
                 <button type="submit" class="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300">Login</button>
             </form>

@@ -38,7 +38,7 @@ class User extends RestController
     }
 
     // Endpoint: POST /user/register
-    public function register_post()
+    public function index_post()
     {
         $data = [
             'userFullname' => $this->post('userFullname'),
@@ -62,7 +62,7 @@ class User extends RestController
         }
 
         // Hash password sebelum disimpan
-        $data['userPassword'] = password_hash($data['userPassword'], PASSWORD_BCRYPT);
+        $data['userPassword'] = password_hash($data['userPassword'], PASSWORD_DEFAULT);
 
         // Simpan data ke database
         if ($this->db->insert('user', $data)) {

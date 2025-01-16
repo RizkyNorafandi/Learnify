@@ -44,7 +44,25 @@ class User extends RestController
             'userFullname' => $this->post('userFullname'),
             'userEmail' => $this->post('userEmail'),
             'userPhone' => $this->post('userPhone'),
+            'userPassword' => $this->post('userPassword'),
         ];
+
+        // Validasi input
+        if (empty($data['userFullname']) || empty($data['userEmail']) || empty($data['userPassword'])) {
+            $this->response(['message' => 'Fullname, Email, and Password are required'], RestController::HTTP_BAD_REQUEST);
+            return;
+        }
+
+        // Cek apakah email sudah terdaftar
+        $this->db->where('userEmail', $data['userEmail']);
+        $existingUser = $this->db->get('user')->row();
+        if ($existingUser) {
+            $this->response(['message' => 'Email already registered'], RestController::HTTP_BAD_REQUEST);
+            return;
+        }
+
+        // Hash password sebelum disimpan
+        $data['userPassword'] = password_hash($data['userPassword'], PASSWORD_DEFAULT);
 
         // Masukkan data ke tabel user
         if ($this->db->insert('user', $data)) {

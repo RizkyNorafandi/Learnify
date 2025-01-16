@@ -10,34 +10,21 @@ class User_model extends CI_Model
         $this->load->database();
     }
 
-    // Fungsi untuk mendaftar pengguna baru
-    public function register($data)
-    {
-        // Hash password sebelum menyimpan
-        $data['userPassword'] = password_hash($data['userPassword'], PASSWORD_DEFAULT);
-        return $this->db->insert('user', $data);
-    }
-
-    // Fungsi untuk login
-    public function login($email, $password)
-    {
-        $this->db->where('userEmail', $email);
-        $query = $this->db->get('user');
-
-        if ($query->num_rows() == 1) {
-            $user = $query->row();
-            // Verifikasi password
-            if (password_verify($password, $user->userPassword)) {
-                return $user; // Kembalikan data pengguna jika password cocok
-            }
-        }
-        return false; // Jika tidak ada pengguna yang cocok atau password salah
-    }
-
     // Fungsi untuk logout (hanya menghapus session)
     public function logout()
     {
-        // Tidak ada operasi database yang diperlukan untuk logout
         return true;
+    }
+
+    public function get_user_by_email($userEmail)
+    {
+        return $this->db->get_where('user', ['userEmail' => $userEmail])->row_array();
+    }
+
+
+    public function register_user($data)
+    {
+        $this->db->insert('user', $data); // Insert data into 'user' table
+        return $this->db->affected_rows() > 0;
     }
 }

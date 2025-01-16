@@ -36,106 +36,106 @@ class Course extends CI_Controller
         $this->load->view('master', $partials);
     }
 
-    // public function store()
-    // {
-    //     // Atur aturan validasi
-    //     $this->form_validation->set_rules('courseName', 'Nama Course', 'required|trim|max_length[100]');
-    //     $this->form_validation->set_rules('classCategory', 'Kategori', 'required|trim|max_length[50]');
-    //     $this->form_validation->set_rules('courseDescription', 'Deskripsi', 'required|trim|max_length[500]');
-    //     $this->form_validation->set_rules('coursePrice', 'Harga', 'required|numeric|greater_than_equal_to[0]');
-    //     $this->form_validation->set_rules('courseTags', 'Tags', 'required|trim|max_length[100]');
+    public function store()
+    {
+        // Atur aturan validasi
+        $this->form_validation->set_rules('courseName', 'Nama Course', 'required|trim|max_length[100]');
+        $this->form_validation->set_rules('classCategory', 'Kategori', 'required|trim|max_length[50]');
+        $this->form_validation->set_rules('courseDescription', 'Deskripsi', 'required|trim|max_length[500]');
+        $this->form_validation->set_rules('coursePrice', 'Harga', 'required|numeric|greater_than_equal_to[0]');
+        $this->form_validation->set_rules('courseTags', 'Tags', 'required|trim|max_length[100]');
 
-    //     // Pesan kesalahan dalam bentuk array
-    //     $error_messages = array(
-    //         'required' => '{field} harus diisi.',
-    //         'max_length' => '{field} tidak boleh lebih dari {param} karakter.',
-    //         'numeric' => '{field} harus berupa angka.',
-    //         'greater_than_equal_to' => '{field} harus lebih besar atau sama dengan {param}.',
-    //     );
+        // Pesan kesalahan dalam bentuk array
+        $error_messages = array(
+            'required' => '{field} harus diisi.',
+            'max_length' => '{field} tidak boleh lebih dari {param} karakter.',
+            'numeric' => '{field} harus berupa angka.',
+            'greater_than_equal_to' => '{field} harus lebih besar atau sama dengan {param}.',
+        );
 
-    //     // Mengatur pesan kesalahan menggunakan array
-    //     foreach ($error_messages as $rule => $message) {
-    //         $this->form_validation->set_message($rule, $message);
-    //     }
+        // Mengatur pesan kesalahan menggunakan array
+        foreach ($error_messages as $rule => $message) {
+            $this->form_validation->set_message($rule, $message);
+        }
 
-    //     // Jalankan validasi
-    //     if ($this->form_validation->run() == FALSE) {
-    //         $this->session->set_flashdata('validation_errors', validation_errors());
-    //         redirect('admin/course');
-    //     } else {
-    //         // Validasi berhasil, simpan data
-    //         $data = [
-    //             'courseName' => $this->input->post('courseName', TRUE),
-    //             'classCategory' => $this->input->post('classCategory', TRUE),
-    //             'courseDescription' => $this->input->post('courseDescription', TRUE),
-    //             'coursePrice' => $this->input->post('coursePrice', TRUE),
-    //             'courseTags' => $this->input->post('courseTags', TRUE),
-    //         ];
+        // Jalankan validasi
+        if ($this->form_validation->run() == FALSE) {
+            $this->session->set_flashdata('validation_errors', validation_errors());
+            redirect('admin/course');
+        } else {
+            // Validasi berhasil, simpan data
+            $data = [
+                'courseName' => $this->input->post('courseName', TRUE),
+                'classCategory' => $this->input->post('classCategory', TRUE),
+                'courseDescription' => $this->input->post('courseDescription', TRUE),
+                'coursePrice' => $this->input->post('coursePrice', TRUE),
+                'courseTags' => $this->input->post('courseTags', TRUE),
+            ];
 
-    //         if ($this->Course_model->insertCourse($data)) {
-    //             $this->session->set_flashdata('success', 'Course berhasil ditambahkan!');
-    //         } else {
-    //             $this->session->set_flashdata('error', 'Gagal menambahkan course. Silakan coba lagi.');
-    //         }
+            if ($this->Course_model->insertCourse($data)) {
+                $this->session->set_flashdata('success', 'Course berhasil ditambahkan!');
+            } else {
+                $this->session->set_flashdata('error', 'Gagal menambahkan course. Silakan coba lagi.');
+            }
 
-    //         redirect('admin/course');
-    //     }
-    // }
-
-
-    // public function update()
-    // {
-    //     // Ambil ID Course dari input
-    //     $courseID = $this->input->post('courseID');
-
-    //     // Atur aturan validasi
-    //     $this->form_validation->set_rules('courseName', 'Nama Course', 'required|trim|max_length[100]');
-    //     $this->form_validation->set_rules('classCategory', 'Kategori', 'required|trim|max_length[50]');
-    //     $this->form_validation->set_rules('courseDescription', 'Deskripsi', 'trim|max_length[100]');
-    //     $this->form_validation->set_rules('coursePrice', 'Harga', 'required|numeric|greater_than_equal_to[0]');
-    //     $this->form_validation->set_rules('courseTags', 'Tags', 'required|trim|max_length[100]');
+            redirect('admin/course');
+        }
+    }
 
 
+    public function update()
+    {
+        // Ambil ID Course dari input
+        $courseID = $this->input->post('courseID');
 
-    //     // Pesan kesalahan dalam bentuk array
-    //     $error_messages = array(
-    //         'required' => '{field} harus diisi.',
-    //         'max_length' => '{field} tidak boleh lebih dari {param} karakter.',
-    //         'numeric' => '{field} harus berupa angka.',
-    //         'greater_than_equal_to' => '{field} harus lebih besar atau sama dengan {param}.',
-    //     );
+        // Atur aturan validasi
+        $this->form_validation->set_rules('courseName', 'Nama Course', 'required|trim|max_length[100]');
+        $this->form_validation->set_rules('classCategory', 'Kategori', 'required|trim|max_length[50]');
+        $this->form_validation->set_rules('courseDescription', 'Deskripsi', 'trim|max_length[100]');
+        $this->form_validation->set_rules('coursePrice', 'Harga', 'required|numeric|greater_than_equal_to[0]');
+        $this->form_validation->set_rules('courseTags', 'Tags', 'required|trim|max_length[100]');
 
-    //     // Mengatur pesan kesalahan menggunakan array
-    //     foreach ($error_messages as $rule => $message) {
-    //         $this->form_validation->set_message($rule, $message);
-    //     }
 
-    //     // Menjalanlan validasi
-    //     if ($this->form_validation->run() == FALSE) {
-    //         // Validasi gagal, kembali ke halaman sebelumnya dengan pesan kesalahan
-    //         $this->session->set_flashdata('validation_errors', validation_errors());
-    //         redirect('admin/course'); // Ganti dengan URL halaman utama course
-    //     } else {
-    //         // Validasi berhasil, proses data
-    //         $data = [
-    //             'courseName' => $this->input->post('courseName', TRUE),
-    //             'classCategory' => $this->input->post('classCategory', TRUE),
-    //             'courseDescription' => $this->input->post('courseDescription', TRUE),
-    //             'coursePrice' => $this->input->post('coursePrice', TRUE),
-    //             'courseTags' => $this->input->post('courseTags', TRUE),
-    //         ];
 
-    //         // Update data ke database
-    //         if ($this->Course_model->updateCourse($courseID, $data)) {
-    //             $this->session->set_flashdata('success', 'Course berhasil diperbarui!');
-    //         } else {
-    //             $this->session->set_flashdata('error', 'Gagal memperbarui course. Silakan coba lagi.');
-    //         }
+        // Pesan kesalahan dalam bentuk array
+        $error_messages = array(
+            'required' => '{field} harus diisi.',
+            'max_length' => '{field} tidak boleh lebih dari {param} karakter.',
+            'numeric' => '{field} harus berupa angka.',
+            'greater_than_equal_to' => '{field} harus lebih besar atau sama dengan {param}.',
+        );
 
-    //         // Redirect kembali ke halaman utama course
-    //         redirect('admin/course');
-    //     }
-    // }
+        // Mengatur pesan kesalahan menggunakan array
+        foreach ($error_messages as $rule => $message) {
+            $this->form_validation->set_message($rule, $message);
+        }
+
+        // Menjalanlan validasi
+        if ($this->form_validation->run() == FALSE) {
+            // Validasi gagal, kembali ke halaman sebelumnya dengan pesan kesalahan
+            $this->session->set_flashdata('validation_errors', validation_errors());
+            redirect('admin/course'); // Ganti dengan URL halaman utama course
+        } else {
+            // Validasi berhasil, proses data
+            $data = [
+                'courseName' => $this->input->post('courseName', TRUE),
+                'classCategory' => $this->input->post('classCategory', TRUE),
+                'courseDescription' => $this->input->post('courseDescription', TRUE),
+                'coursePrice' => $this->input->post('coursePrice', TRUE),
+                'courseTags' => $this->input->post('courseTags', TRUE),
+            ];
+
+            // Update data ke database
+            if ($this->Course_model->updateCourse($courseID, $data)) {
+                $this->session->set_flashdata('success', 'Course berhasil diperbarui!');
+            } else {
+                $this->session->set_flashdata('error', 'Gagal memperbarui course. Silakan coba lagi.');
+            }
+
+            // Redirect kembali ke halaman utama course
+            redirect('admin/course');
+        }
+    }
 
 
 }
