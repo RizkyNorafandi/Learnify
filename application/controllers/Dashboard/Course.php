@@ -15,11 +15,19 @@ class Course extends CI_Controller
 
     public function index()
     {
+        // Initialize cURL session
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://localhost/learnify/api/courseAPI/");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $courses = json_decode($response, true);
+
         $datas = array(
             'title' => ' Daftar Course',
             'hidden' => '',
             'color' => 'blue',
-            'courses' => $this->Course_model->get_courses(),
+            'courses' => $courses,
             'csrf_token_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash(),
         );
@@ -136,8 +144,6 @@ class Course extends CI_Controller
             redirect('admin/course');
         }
     }
-
-
 }
 
 /* End of file Course.php */

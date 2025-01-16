@@ -82,11 +82,7 @@ $route['admin/logout'] = 'dashboard/auth/logout';
 
 $route['course/update'] = 'dashboard/course/update';
 $route['course/store'] = 'dashboard/course/store';
-$route['course/drop'] = 'dashboard/course/delete';
-
-$route['api/getCourse'] = 'api/CourseAPI';
-$route['api/coursePost'] = 'api/CourseAPI/index_post';
-
+$route['course/drop'] = 'dashboard/course/delete'; 
 
 // $route['api/getCourse'] = 'api/CourseAPI';
 // $route['api/getCourse/(:num)'] = 'api/CourseAPI/course/$1';

@@ -37,55 +37,55 @@ class Auth extends CI_Controller
         $this->load->view('master_user', $partials);
     }
 
-    public function login_submit()
-    {
-        // Validasi form input
-        $this->form_validation->set_rules('userEmail', 'Email', 'required|trim|valid_email');
-        $this->form_validation->set_rules('userPassword', 'Password', 'required|trim');
+    // public function login_submit()
+    // {
+    //     // Validasi form input
+    //     $this->form_validation->set_rules('userEmail', 'Email', 'required|trim|valid_email');
+    //     $this->form_validation->set_rules('userPassword', 'Password', 'required|trim');
 
-        if ($this->form_validation->run() == FALSE) {
-            $this->session->set_flashdata('error', validation_errors());
-            redirect('login');
-        }
+    //     if ($this->form_validation->run() == FALSE) {
+    //         $this->session->set_flashdata('error', validation_errors());
+    //         redirect('login');
+    //     }
 
-        $userEmail = $this->input->post('userEmail', TRUE);
-        $userPassword = $this->input->post('userPassword', TRUE);
+    //     $userEmail = $this->input->post('userEmail', TRUE);
+    //     $userPassword = $this->input->post('userPassword', TRUE);
 
-        // Cek apakah pengguna telah mencapai batas percobaan login
-        $attempts = $this->session->userdata('login_attempts') ?: 0;
-        $lockout_time = $this->session->userdata('lockout_time');
+    //     // Cek apakah pengguna telah mencapai batas percobaan login
+    //     $attempts = $this->session->userdata('login_attempts') ?: 0;
+    //     $lockout_time = $this->session->userdata('lockout_time');
 
-        if ($attempts >= $this->max_attempts && time() < $lockout_time) {
-            $remaining_time = $lockout_time - time();
-            $this->session->set_flashdata('error', "Too many login attempts. Please try again in {$remaining_time} seconds.");
-            redirect('login');
-        }
+    //     if ($attempts >= $this->max_attempts && time() < $lockout_time) {
+    //         $remaining_time = $lockout_time - time();
+    //         $this->session->set_flashdata('error', "Too many login attempts. Please try again in {$remaining_time} seconds.");
+    //         redirect('login');
+    //     }
 
-        // Cek kredensial user
-        $user = $this->User_model->get_user_by_email($userEmail);
+    //     // Cek kredensial user
+    //     $user = $this->User_model->get_user_by_email($userEmail);
 
-        if ($user && password_verify($userPassword, $user['userPassword'])) {
-            // Reset login attempts on success
-            $this->session->set_userdata('logged_in', TRUE);
-            $this->session->set_userdata('userID', $user['id']);
-            $this->session->unset_userdata(['login_attempts', 'lockout_time']);
+    //     if ($user && password_verify($userPassword, $user['userPassword'])) {
+    //         // Reset login attempts on success
+    //         $this->session->set_userdata('logged_in', TRUE);
+    //         $this->session->set_userdata('userID', $user['id']);
+    //         $this->session->unset_userdata(['login_attempts', 'lockout_time']);
 
-            $this->session->set_flashdata('success', 'Login successful!');
-            redirect('Home');
-        } else {
-            // Increment login attempts
-            $attempts++;
-            $this->session->set_userdata('login_attempts', $attempts);
+    //         $this->session->set_flashdata('success', 'Login successful!');
+    //         redirect('Home');
+    //     } else {
+    //         // Increment login attempts
+    //         $attempts++;
+    //         $this->session->set_userdata('login_attempts', $attempts);
 
-            if ($attempts >= $this->max_attempts) {
-                $lockout_time = time() + $this->lockout_time;
-                $this->session->set_userdata('lockout_time', $lockout_time);
-                $this->session->set_flashdata('error', "Too many login attempts. Please try again in {$this->lockout_time} seconds.");
-            } else {
-                $remaining_attempts = $this->max_attempts - $attempts;
-                $this->session->set_flashdata('error', "Invalid email or password. You have {$remaining_attempts} attempts left.");
-            }
-            redirect('login');
-        }
-    }
+    //         if ($attempts >= $this->max_attempts) {
+    //             $lockout_time = time() + $this->lockout_time;
+    //             $this->session->set_userdata('lockout_time', $lockout_time);
+    //             $this->session->set_flashdata('error', "Too many login attempts. Please try again in {$this->lockout_time} seconds.");
+    //         } else {
+    //             $remaining_attempts = $this->max_attempts - $attempts;
+    //             $this->session->set_flashdata('error', "Invalid email or password. You have {$remaining_attempts} attempts left.");
+    //         }
+    //         redirect('login');
+    //     }
+    // }
 }

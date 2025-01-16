@@ -7,20 +7,12 @@
             <p class="text-xs mt-4 text-[#002D74]">If you are already a member, easily log in</p>
 
             <!-- Tampilkan pesan error -->
-            <?php if ($this->session->flashdata('error')): ?>
-                <div class="bg-red-200 text-red-800 p-2 rounded mb-4">
-                    <?php echo $this->session->flashdata('error'); ?>
-                </div>
-            <?php endif; ?>
+            <div id="error-message" class="bg-red-200 text-red-800 p-2 rounded mb-4" style="display: none;"></div>
 
             <!-- Tampilkan pesan sukses -->
-            <?php if ($this->session->flashdata('success')): ?>
-                <div class="bg-green-200 text-green-800 p-2 rounded mb-4">
-                    <?php echo $this->session->flashdata('success'); ?>
-                </div>
-            <?php endif; ?>
+            <div id="success-message" class="bg-green-200 text-green-800 p-2 rounded mb-4" style="display: none;"></div>
 
-            <form id="loginForm" method="post" action="<?php echo base_url('authLogin') ?>" class="flex flex-col gap-4">
+            <form id="loginForm" class="flex flex-col gap-4">
                 <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
                 <input class="p-2 mt-8 rounded-xl border" type="email" id="userEmail" name="userEmail" placeholder="Email" required>
                 <div class="relative">
@@ -41,3 +33,42 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const userEmail = document.getElementById('userEmail').value;
+        const userPassword = document.getElementById('userPassword').value;
+        const csrfToken = document.querySelector('input[name="<?= $csrf_token_name; ?>"]').value;
+
+        fetch('<?php echo base_url('auth/login_submit'); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    '<?= $csrf_token_name; ?>': csrfToken
+                },
+                body: JSON.stringify({
+                    userEmail,
+                    userPassword
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    document.getElementById('success-message').innerText = data.message;
+                    document.getElementById('success-message').style.display = 'block';
+                    document.getElementById('error-message').style.display = 'none';
+                } else {
+                    document.getElementById('error-message').innerText = data.message;
+                    document.getElementById('error-message').style.display = 'block';
+                    document.getElementById('success-message').style.display = 'none';
+                }
+            })
+            .catch(error => {
+                document.getElementById('error-message').innerText = 'An error occurred. Please try again.';
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
+            });
+    });
+</script>

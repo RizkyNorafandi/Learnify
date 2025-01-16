@@ -44,15 +44,15 @@
                     <?php foreach ($courses as $index => $course): ?>
                         <tr class="hover:bg-blue-100">
                             <td class="py-6 px-6 border-b"><?= $index + 1 ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course->courseName) ? html_escape($course->courseName) : 'N/A' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course->classCategory) ? html_escape($course->classCategory) : 'N/A' ?></td>
-                            <td class="py-6 px-6 border-b"><?= !empty($course->courseDescription) ? html_escape($course->courseDescription) : 'Deskripsi tidak tersedia' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course->courseRating) ? html_escape($course->courseRating) : '-' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course->coursePrice) ? 'Rp. ' . number_format($course->coursePrice, 0, ',', '.') : 'Gratis' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course->courseTags) ? html_escape($course->courseTags) : 'Tidak ada tag' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course['courseName']) ? html_escape($course['courseName']) : 'N/A' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course['classCategory']) ? html_escape($course['classCategory']) : 'N/A' ?></td>
+                            <td class="py-6 px-6 border-b"><?= !empty($course['courseDescription']) ? html_escape($course['courseDescription']) : 'Deskripsi tidak tersedia' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course['courseRating']) ? html_escape($course['courseRating']) : '-' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course['coursePrice']) ? 'Rp. ' . number_format($course['coursePrice'], 0, ',', '.') : 'Gratis' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course['courseTags']) ? html_escape($course['courseTags']) : 'Tidak ada tag' ?></td>
                             <td class="py-6 px-6 border-b">
-                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course->courseID ?>" data-course-name="<?= html_escape($course->courseName) ?>" data-course-category="<?= html_escape($course->classCategory) ?>" data-course-description="<?= html_escape($course->courseDescription) ?>" data-course-price="<?= $course->coursePrice ?>" data-course-tags="<?= $course->courseTags ?>">Edit</button> |
-                                <button class="text-red-600 hover:underline openModalButton " data-course-id="<?= $course->courseID ?>">Hapus</button>
+                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course['courseID'] ?>" data-course-name="<?= html_escape($course['courseName']) ?>" data-course-category="<?= html_escape($course['classCategory']) ?>" data-course-description="<?= html_escape($course['courseDescription']) ?>" data-course-price="<?= $course['coursePrice'] ?>" data-course-tags="<?= $course['courseTags'] ?>">Edit</button> |
+                                <button class="text-red-600 hover:underline openModalButton" data-course-id="<?= $course['courseID'] ?>">Hapus</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -64,11 +64,7 @@
             </tbody>
         </table>
     </div>
-
 </section>
-
-
-<!-- Modal -->
 
 <!-- Modal Tambah -->
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
@@ -111,7 +107,6 @@
     </div>
 </div>
 
-
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg w-1/3">
@@ -140,14 +135,14 @@
             </div>
             <div class="mb-4">
                 <label for="coursePrice" class="block text-sm font-medium text-gray-700">Harga</label>
-                <input required type="number" id="modal-coursePrice" name="coursePrice" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
+                <input required type="number" id="modal-coursePrice" name="coursePrice" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             <div class="mb-4">
                 <label for="courseTags" class="block text-sm font-medium text-gray-700">Tags</label>
                 <input required type="text" id="modal-courseTags" name="courseTags" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             <div class="flex justify-end">
-                <button type="button" id="closeModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
+                <button type="button" id="closeEditModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Save</button>
             </div>
         </form>
@@ -161,94 +156,93 @@
         <p class="mb-6 text-gray-600">Are you sure you want to delete this course? This action cannot be undone.</p>
         <form action="<?= site_url('course/delete') ?>" method="post">
             <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
-            <input type="hidden" name="courseID" id="modal-courseID">
+            <input type="hidden" name="courseID" id="modal-delete-courseID">
             <div class="flex justify-center">
-                <button type="button" id="closeModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
+                <button type="button" id="closeDeleteModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Delete</button>
             </div>
         </form>
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"> </script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const modal = document.getElementById('editModal');
-        const closeModal = document.getElementById('closeModal');
-        const modalInputs = {
-            courseID: document.getElementById('modal-courseID'),
-            courseName: document.getElementById('modal-courseName'),
-            classCategory: document.getElementById('modal-classCategory'),
-            courseDescription: document.getElementById('modal-courseDescription'),
-            coursePrice: document.getElementById('modal-coursePrice'),
-            courseTags: document.getElementById('modal-courseTags'),
-        };
-
-        document.querySelectorAll('.open-modal').forEach(button => {
-            button.addEventListener('click', () => {
-                modalInputs.courseID.value = button.dataset.courseId;
-                modalInputs.courseName.value = button.dataset.courseName;
-                modalInputs.classCategory.value = button.dataset.courseCategory;
-                modalInputs.courseDescription.value = button.dataset.courseDescription;
-                modalInputs.coursePrice.value = button.dataset.coursePrice;
-                modalInputs.courseTags.value = button.dataset.courseTags;
-
-                modal.classList.remove('hidden');
-            });
-        });
-
-        closeModal.addEventListener('click', () => {
-            modal.classList.add('hidden');
-        });
-    });
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const addModal = document.getElementById('addModal');
-        const openAddModal = document.getElementById('openAddModal');
-        const closeAddModal = document.getElementById('closeAddModal');
-
-        openAddModal.addEventListener('click', () => {
-            addModal.classList.remove('hidden');
-        });
-
-        closeAddModal.addEventListener('click', () => {
-            addModal.classList.add('hidden');
-        });
-    });
-
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const deleteModal = document.getElementById('deleteModal');
-        const closeModalButton = document.getElementById('closeModal');
-        const openDeleteModal = document.querySelector('.openModalButton'); // Asumsikan class ini untuk tombol pembuka modal
-
-        // Event listener untuk membuka modal
-        openDeleteModal.addEventListener('click', () => {
-            deleteModal.classList.remove('hidden');
-        });
-
-        // Event listener untuk menutup modal
-        closeModalButton.addEventListener('click', () => {
-            deleteModal.classList.add('hidden');
-        });
-
-        // Menutup modal jika klik di luar modal
-        deleteModal.addEventListener('click', (e) => {
-            if (e.target === deleteModal) {
-                deleteModal.classList.add('hidden');
-            }
-        });
-    });
-
-
     $(document).ready(function() {
         $('#coursesTable').DataTable({
             responsive: true,
             language: {
-                url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/eng.json' // Bahasa Indonesia
+                url: '//cdn.datatables.net/plug-ins/1.11.5/i18n/eng.json'
+            }
+        });
+
+        // Edit Modal
+        const editModal = $('#editModal');
+        const closeEditModal = $('#closeEditModal');
+        const modalInputs = {
+            courseID: $('#modal-courseID'),
+            courseName: $('#modal-courseName'),
+            classCategory: $('#modal-classCategory'),
+            courseDescription: $('#modal-courseDescription'),
+            coursePrice: $('#modal-coursePrice'),
+            courseTags: $('#modal-courseTags'),
+        };
+
+        $('.open-modal').on('click', function() {
+            const button = $(this);
+            modalInputs.courseID.val(button.data('course-id'));
+            modalInputs.courseName.val(button.data('course-name'));
+            modalInputs.classCategory.val(button.data('course-category'));
+            modalInputs.courseDescription.val(button.data('course-description'));
+            modalInputs.coursePrice.val(button.data('course-price'));
+            modalInputs.courseTags.val(button.data('course-tags'));
+
+            editModal.removeClass('hidden');
+        });
+
+        closeEditModal.on('click', function() {
+            editModal.addClass('hidden');
+        });
+
+        // Add Modal
+        const addModal = $('#addModal');
+        const openAddModal = $('#openAddModal');
+        const closeAddModal = $('#closeAddModal');
+
+        openAddModal.on('click', function() {
+            addModal.removeClass('hidden');
+        });
+
+        closeAddModal.on('click', function() {
+            addModal.addClass('hidden');
+        });
+
+        // Delete Modal
+        const deleteModal = $('#deleteModal');
+        const closeDeleteModal = $('#closeDeleteModal');
+        const openDeleteModal = $('.openModalButton');
+
+        openDeleteModal.on('click', function() {
+            const button = $(this);
+            $('#modal-delete-courseID').val(button.data('course-id'));
+            deleteModal.removeClass('hidden');
+        });
+
+        closeDeleteModal.on('click', function() {
+            deleteModal.addClass('hidden');
+        });
+
+        // Close modal if click outside
+        $(window).on('click', function(event) {
+            if ($(event.target).is(deleteModal)) {
+                deleteModal.addClass('hidden');
+            }
+            if ($(event.target).is(editModal)) {
+                editModal.addClass('hidden');
+            }
+            if ($(event.target).is(addModal)) {
+                addModal.addClass('hidden');
             }
         });
     });

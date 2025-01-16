@@ -19,7 +19,7 @@
             <nav class="navbar navbar-expand-lg bg-white mx-auto shadow-sm border">
                 <div class="container-fluid px-5">
                     <div class="navbar-brand">
-                        <img src="<?php base_url('assets/image/') ?> logo.jpeg" alt="Logo" width="180px" />
+                        <img src="<?= base_url('assets/images/') ?> logo.png" alt="Logo" width="180px" />
                     </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul
