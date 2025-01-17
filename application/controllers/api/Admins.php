@@ -13,8 +13,6 @@ class Auth_admin extends RestController
         parent::__construct();
         //Do your magic here
         $this->load->model('admin_model');
-        $this->load->library('form_validation');
-        $this->load->library('session');
     }
 
 

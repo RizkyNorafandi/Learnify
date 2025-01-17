@@ -25,7 +25,7 @@
         <button id="openAddModal" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Tambah Course</button>
     </div>
 
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <div class="relative overflow-x-auto">
         <table id="coursesTable" class="w-full text-sm text-left rtl:text-right text-gray-950 dark:text-neutral-950">
             <thead class="bg-blue-200 text-black uppercase test-xs">
                 <tr>
@@ -44,15 +44,15 @@
                     <?php foreach ($courses as $index => $course): ?>
                         <tr class="hover:bg-blue-100">
                             <td class="py-6 px-6 border-b"><?= $index + 1 ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course['courseName']) ? html_escape($course['courseName']) : 'N/A' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course['classCategory']) ? html_escape($course['classCategory']) : 'N/A' ?></td>
-                            <td class="py-6 px-6 border-b"><?= !empty($course['courseDescription']) ? html_escape($course['courseDescription']) : 'Deskripsi tidak tersedia' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course['courseRating']) ? html_escape($course['courseRating']) : '-' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course['coursePrice']) ? 'Rp. ' . number_format($course['coursePrice'], 0, ',', '.') : 'Gratis' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course['courseTags']) ? html_escape($course['courseTags']) : 'Tidak ada tag' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course->courseName) ? html_escape($course->courseName) : 'N/A' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course->classCategory) ? html_escape($course->classCategory) : 'N/A' ?></td>
+                            <td class="py-6 px-6 border-b"><?= !empty($course->courseDescription) ? html_escape($course->courseDescription) : 'Deskripsi tidak tersedia' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course->courseRating) ? html_escape($course->courseRating) : '-' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course->coursePrice) ? 'Rp. ' . number_format($course->coursePrice, 0, ',', '.') : 'Gratis' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course->courseTags) ? html_escape($course->courseTags) : 'Tidak ada tag' ?></td>
                             <td class="py-6 px-6 border-b">
-                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course['courseID'] ?>" data-course-name="<?= html_escape($course['courseName']) ?>" data-course-category="<?= html_escape($course['classCategory']) ?>" data-course-description="<?= html_escape($course['courseDescription']) ?>" data-course-price="<?= $course['coursePrice'] ?>" data-course-tags="<?= $course['courseTags'] ?>">Edit</button> |
-                                <button class="text-red-600 hover:underline openModalButton" data-course-id="<?= $course['courseID'] ?>">Hapus</button>
+                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course->courseID ?>" data-course-name="<?= html_escape($course->courseName) ?>" data-course-category="<?= html_escape($course->classCategory) ?>" data-course-description="<?= html_escape($course->courseDescription) ?>" data-course-price="<?= $course->coursePrice ?>" data-course-tags="<?= $course->courseTags ?>">Edit</button> |
+                                <button class="text-red-600 hover:underline openModalButton" data-course-id="<?= $course->courseID ?>">Hapus</button>
                             </td>
                         </tr>
                     <?php endforeach; ?>

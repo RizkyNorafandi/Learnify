@@ -9,18 +9,26 @@ class Dashboard extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('course_model');
+        $this->load->model('courseModel');
         AdminMiddleware::is_logged_in();
     }
 
 
     public function index()
     {
+        // Initialize cURL session
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "http://localhost/learnify/api/Courses/");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $response = curl_exec($ch);
+        curl_close($ch);
+        $courses = json_decode($response);
 
         $datas = array(
             'title' => 'Dashboard',
             'hidden' => '',
             'color' => 'blue',
+            'courses' => $courses,
         );
 
         $partials = array(

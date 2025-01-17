@@ -49,10 +49,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller'] = 'User/'; // Set default controller to User/login
+$route['default_controller'] = 'Home';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+// User
+$route['login'] = 'Auth/login';
 
 
 // $route['auth/login'] = 'api/auth/login'; // Rute untuk login
@@ -70,6 +72,8 @@ $route['Home'] = 'User/Home/';
 $route['registerAPI'] = 'api/registerAPI/';
 
 
+
+// Dashboard
 $route['admin/login'] = 'dashboard/auth';
 $route['admin/course'] = 'dashboard/course';
 $route['admin/dashboard'] = 'dashboard/dashboard';
@@ -78,10 +82,10 @@ $route['admin/user'] = 'dashboard/user';
 $route['admin/login_post'] = 'dashboard/auth/login';
 $route['admin/logout'] = 'dashboard/auth/logout';
 
-
-
 $route['course/update'] = 'dashboard/course/update';
 $route['course/store'] = 'dashboard/course/store';
+$route['course/drop'] = 'dashboard/course/delete';
+
 $route['course/drop'] = 'dashboard/course/delete'; 
 
 // $route['api/getCourse'] = 'api/CourseAPI';

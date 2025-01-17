@@ -7,7 +7,7 @@ class Course extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Course_model'); // Memuat model
+        $this->load->model('courseModel'); // Memuat model
         $this->load->library('form_validation');
         AdminMiddleware::is_logged_in();
     }
@@ -17,11 +17,11 @@ class Course extends CI_Controller
     {
         // Initialize cURL session
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://localhost/learnify/api/courseAPI/");
+        curl_setopt($ch, CURLOPT_URL, "http://localhost/learnify/api/Courses/");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $response = curl_exec($ch);
         curl_close($ch);
-        $courses = json_decode($response, true);
+        $courses = json_decode($response);
 
         $datas = array(
             'title' => ' Daftar Course',
@@ -80,7 +80,7 @@ class Course extends CI_Controller
                 'courseTags' => $this->input->post('courseTags', TRUE),
             ];
 
-            if ($this->Course_model->insertCourse($data)) {
+            if ($this->courseModel->insertCourse($data)) {
                 $this->session->set_flashdata('success', 'Course berhasil ditambahkan!');
             } else {
                 $this->session->set_flashdata('error', 'Gagal menambahkan course. Silakan coba lagi.');
@@ -134,7 +134,7 @@ class Course extends CI_Controller
             ];
 
             // Update data ke database
-            if ($this->Course_model->updateCourse($courseID, $data)) {
+            if ($this->courseModel->updateCourse($courseID, $data)) {
                 $this->session->set_flashdata('success', 'Course berhasil diperbarui!');
             } else {
                 $this->session->set_flashdata('error', 'Gagal memperbarui course. Silakan coba lagi.');
