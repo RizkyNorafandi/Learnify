@@ -19,9 +19,7 @@ class Auth extends CI_Controller
             'title' => 'Login admin',
             'hidden' => '',
             'color' => 'blue',
-            'is_login_page' => true, // Indikator halaman login
-            'csrf_token_name' => $this->security->get_csrf_token_name(),
-            'csrf_hash' => $this->security->get_csrf_hash(),
+            'is_login_page' => true,
         );
 
         $partials = array(

@@ -15,7 +15,7 @@ class Profile extends CI_Controller
             'script' => 'Templates/User/script',
         );
 
-        $this->load->view('master_user', $templates);
+        $this->load->view('masterUser', $templates);
     }
 }
 

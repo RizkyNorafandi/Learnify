@@ -42,18 +42,18 @@
                 </tr>
             </thead>
             <tbody>
-                <?php if (!empty($courses)): ?>
+                <?php if ($courses): ?>
                     <?php foreach ($courses as $index => $course): ?>
                         <tr class="hover:bg-blue-100">
                             <td class="py-6 px-6 border-b"><?= $index + 1 ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->courseName) ? html_escape($course->courseName) : 'N/A' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course->classCategory) ? html_escape($course->classCategory) : 'N/A' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course->courseCategory) ? html_escape($course->courseCategory) : 'N/A' ?></td>
                             <td class="py-6 px-6 border-b"><?= !empty($course->courseDescription) ? html_escape($course->courseDescription) : 'Deskripsi tidak tersedia' ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->courseRating) ? html_escape($course->courseRating) : '-' ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->coursePrice) ? 'Rp. ' . number_format($course->coursePrice, 0, ',', '.') : 'Gratis' ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->courseTags) ? html_escape($course->courseTags) : 'Tidak ada tag' ?></td>
                             <td class="py-6 px-6 border-b">
-                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course->courseID ?>" data-course-name="<?= html_escape($course->courseName) ?>" data-course-category="<?= html_escape($course->classCategory) ?>" data-course-description="<?= html_escape($course->courseDescription) ?>" data-course-price="<?= $course->coursePrice ?>" data-course-tags="<?= $course->courseTags ?>">Edit</button> |
+                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course->courseID ?>" data-course-name="<?= html_escape($course->courseName) ?>" data-course-category="<?= html_escape($course->courseCategory) ?>" data-course-description="<?= html_escape($course->courseDescription) ?>" data-course-price="<?= $course->coursePrice ?>" data-course-tags="<?= $course->courseTags ?>">Edit</button> |
                                 <button class="text-red-600 hover:underline openModalButton " data-course-id="<?= $course->courseID ?>">Hapus</button>
                             </td>
                         </tr>
@@ -83,8 +83,8 @@
                 <input required type="text" id="addCourseName" name="courseName" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             <div class="mb-4">
-                <label for="addClassCategory" class="block text-sm font-medium text-gray-700">Kategori</label>
-                <select required id="addClassCategory" name="classCategory" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <label for="addCourseCategory" class="block text-sm font-medium text-gray-700">Kategori</label>
+                <select required id="addCourseCategory" name="courseCategory" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     <option value="" disabled selected>Pilih Kategori</option>
                     <option value="1">Kategori 1</option>
                     <option value="2">Kategori 2</option>
@@ -126,8 +126,8 @@
                 <input required type="text" id="modal-courseName" name="courseName" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
             </div>
             <div class="mb-4">
-                <label for="classCategory" class="block text-sm font-medium text-gray-700">Kategori</label>
-                <select required id="modal-classCategory" name="classCategory" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <label for="courseCategory" class="block text-sm font-medium text-gray-700">Kategori</label>
+                <select required id="modal-courseCategory" name="courseCategory" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
                     <option value="" disabled selected>Pilih Kategori</option>
                     <option value="1">Kategori 1</option>
                     <option value="2">Kategori 2</option>
@@ -182,7 +182,7 @@
         const modalInputs = {
             courseID: document.getElementById('modal-courseID'),
             courseName: document.getElementById('modal-courseName'),
-            classCategory: document.getElementById('modal-classCategory'),
+            courseCategory: document.getElementById('modal-courseCategory'),
             courseDescription: document.getElementById('modal-courseDescription'),
             coursePrice: document.getElementById('modal-coursePrice'),
             courseTags: document.getElementById('modal-courseTags'),
@@ -192,7 +192,7 @@
             button.addEventListener('click', () => {
                 modalInputs.courseID.value = button.dataset.courseId;
                 modalInputs.courseName.value = button.dataset.courseName;
-                modalInputs.classCategory.value = button.dataset.courseCategory;
+                modalInputs.courseCategory.value = button.dataset.courseCategory;
                 modalInputs.courseDescription.value = button.dataset.courseDescription;
                 modalInputs.coursePrice.value = button.dataset.coursePrice;
                 modalInputs.courseTags.value = button.dataset.courseTags;

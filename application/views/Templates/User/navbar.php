@@ -3,7 +3,7 @@
         <nav class="navbar navbar-expand-lg bg-white mx-auto shadow-sm border">
             <div class="container-fluid px-5">
                 <div class="navbar-brand">
-                    <img src="<?= base_url('assets/images/logo.png') ?>" alt="Logo" width="180px" />
+                    <img src="<?= base_url('assets/images/logo_with_text.png') ?>" alt="Logo" width="180px" />
                 </div>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-auto d-flex grid gap-5">

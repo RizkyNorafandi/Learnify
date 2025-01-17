@@ -8,7 +8,7 @@ class Home extends CI_Controller
     public function __construct() {
         parent::__construct();
         
-        $this->session->userdata('userFullname') ? '' : redirect('login');
+        $this->session->userdata('userID') ? '' : redirect('login');
     }
     
 
@@ -29,7 +29,7 @@ class Home extends CI_Controller
         );
 
         $this->load->vars($datas);
-        $this->load->view('master_user', $templates);
+        $this->load->view('masterUser', $templates);
     }
 }
 

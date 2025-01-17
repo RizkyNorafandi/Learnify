@@ -9,6 +9,15 @@ class Users extends RestController
     public function __construct() {
         parent::__construct();
 
+        if ($this->input->method() == 'post' || $this->input->method() == 'put' || $this->input->method() == 'delete') {
+            $csrf_token = $this->input->server('X-CSRF-TOKEN');
+            $csrf_cookie = $this->input->cookie('csrf_cookie_name');
+            if ($csrf_token !== $csrf_cookie) {
+                $this->response(['status' => FALSE, 'message' => 'Invalid CSRF token'], RestController::HTTP_FORBIDDEN);
+                return;
+            }
+        }
+
         $this->load->model('userModel');
     }
 
@@ -108,52 +117,30 @@ class Users extends RestController
 
     // Endpoint: POST /users/login
     public function login_post() {
-        log_message('info', 'Login attempt started.');
+        $email = $this->post('email');
+        $password = $this->post('password');
+        $user = $this->userModel->login($email, $password);
 
-        // Ambil input dari JSON body jika ada
-        $input = json_decode(file_get_contents('php://input'), true);
-        $this->form_validation->set_data($input);
-
-        // Aturan validasi
-        $this->form_validation->set_rules('email', 'email', 'required|valid_email');
-        $this->form_validation->set_rules('password', 'password', 'required');
-
-        if ($this->form_validation->run() == false) {
-            $errors = array_filter(explode("\n", strip_tags(validation_errors())));
+        if ($user) {
+            $this->session->set_userdata('userID', $user->userID);
+            $this->session->set_userdata('userEmail', $user->userEmail);
+            $this->response([
+                'status' => true,
+                'message' => 'Login berhasil',
+                'data' => [
+                    'userID' => $user->userID,
+                    'userFullname' => $user->userFullname,
+                    'userEmail' => $user->userEmail,
+                    'userPhone' => $user->userPhone,
+                    'userAddress' => $user->userAddress,
+                    'userPhoto' => $user->userPhoto,
+                ]
+            ], RestController::HTTP_OK);
+        } else {
             $this->response([
                 'status' => false,
-                'message' => implode(' ', $errors)
-            ], RestController::HTTP_BAD_REQUEST);
-        } else {
-            $email = $this->post('email');
-            $password = $this->post('password');
-
-            log_message('info', 'Email: ' . $email);
-
-            $user = $this->userModel->login($email, $password);
-
-            if ($user) {
-                $this->session->set_userdata('userID', $user->userID);
-                $this->session->set_userdata('userEmail', $user->userEmail);
-                $this->response([
-                    'status' => true,
-                    'message' => 'Login berhasil',
-                    'data' => [
-                        'userID' => $user->userID,
-                        'userFullname' => $user->userFullname,
-                        'userEmail' => $user->userEmail,
-                        'userPhone' => $user->userPhone,
-                        'userAddress' => $user->userAddress,
-                        'userPhoto' => $user->userPhoto,
-                    ]
-                ], RestController::HTTP_OK);
-            } else {
-                log_message('error', 'Login failed: Invalid email or password.');
-                $this->response([
-                    'status' => false,
-                    'message' => 'Email atau password salah'
-                ], RestController::HTTP_UNAUTHORIZED);
-            }
+                'message' => 'Email atau password salah'
+            ], RestController::HTTP_UNAUTHORIZED);
         }
     }
 
@@ -192,7 +179,6 @@ class Users extends RestController
     }
 
     public function logout_post() {
-        // Hapus session pengguna
         $this->session->unset_userdata('userID');
         $this->session->sess_destroy();
 

@@ -9,14 +9,13 @@ class courseModel extends CI_Model {
     public function __construct()
     {
         parent::__construct();
-        $this->load->database();
     }
 
     // Fungsi untuk mengambil semua data course
     public function get_courses()
     {
-        $query = $this->db->get('course'); // Mengambil semua data dari tabel course
-        return $query->result(); // Mengembalikan hasil sebagai array objek
+        $query = $this->db->get('course');
+        return $query->result();
     }
 
     public function insertCourse($data)

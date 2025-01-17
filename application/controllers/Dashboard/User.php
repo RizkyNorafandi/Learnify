@@ -8,8 +8,7 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Course_model'); // Memuat model
-        $this->load->library('form_validation');
+        $this->load->model('courseModel');
         AdminMiddleware::is_logged_in();
     }
 
@@ -19,7 +18,7 @@ class User extends CI_Controller
             'title' => ' Daftar User',
             'hidden' => '',
             'color' => 'blue',
-            'courses' => $this->Course_model->get_courses()
+            'courses' => $this->courseModel->get_courses()
         );
 
         $partials = array(

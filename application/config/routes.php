@@ -54,8 +54,8 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // User
-$route['login'] = 'Auth/login';
-$route['register'] = 'user/register';
+$route['login'] = 'Auth/loginPage';
+$route['register'] = 'Auth/registerPage';
 
 
 
@@ -71,9 +71,3 @@ $route['admin/logout'] = 'dashboard/auth/logout';
 $route['course/update'] = 'dashboard/course/update';
 $route['course/store'] = 'dashboard/course/store';
 $route['course/drop'] = 'dashboard/course/delete';
-
-
-// $route['api/getCourse'] = 'api/CourseAPI';
-// $route['api/getCourse/(:num)'] = 'api/CourseAPI/course/$1';
-// $route['api/putCourses/(:num)'] = 'api/CourseAPI/course_put/$1';
-// $route['api/courses/(:num)']['DELETE'] = 'CourseAPI/course_delete/$1';

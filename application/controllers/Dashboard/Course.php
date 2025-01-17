@@ -7,17 +7,14 @@ class Course extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Course_model'); // Memuat model
-        $this->load->library('form_validation');
-        AdminMiddleware::is_logged_in();
+        // AdminMiddleware::is_logged_in();
     }
 
 
     public function index()
     {
-        // Initialize cURL session
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://localhost/learnify/api/courseAPI/");
+        curl_setopt($ch, CURLOPT_URL, "http://localhost/learnify/api/courses");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $response = curl_exec($ch);
         curl_close($ch);
@@ -27,9 +24,7 @@ class Course extends CI_Controller
             'title' => ' Daftar Course',
             'hidden' => '',
             'color' => 'blue',
-            'courses' => $courses,
-            'csrf_token_name' => $this->security->get_csrf_token_name(),
-            'csrf_hash' => $this->security->get_csrf_hash(),
+            'courses' => $courses->data,
         );
 
         $partials = array(

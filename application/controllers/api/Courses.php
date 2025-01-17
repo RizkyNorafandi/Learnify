@@ -21,9 +21,12 @@ class Courses extends RestController
 
         if ($id) {
             if ($check_data) {
-                $data = $this->db->get_where('course', ['courseID' => $id])->row_array();
+                $data = $this->db->get_where('course', ['courseID' => $id])->result();
 
-                $this->response($data, RestController::HTTP_OK);
+                $this->response([
+                    'status' => true,
+                    'data' => $data
+                ], RestController::HTTP_OK);
             } else {
                 $this->response([
                     'status' => false,
@@ -32,7 +35,10 @@ class Courses extends RestController
             }
         } else {
             $data = $this->db->get('course')->result();
-            $this->response($data, RestController::HTTP_OK);
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], RestController::HTTP_OK);
         }
     }
 
