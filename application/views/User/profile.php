@@ -1,7 +1,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-3 profile-sidebar">
-            <img class="profile-img" src="https://via.placeholder.com/100" alt="Profile Picture">
+            <img class="profile-img" src="https://picsum.photos/100" alt="Profile Picture">
             <h5>Nama User</h5>
             <p>Student</p>
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
@@ -54,19 +54,19 @@
                     <p>Get rewarded for your learning progress with one of-a-kind badges. Check out the badges you earned and learn about the next badges you could earn here</p>
                     <div class="row">
                         <div class="col-md-3 text-center">
-                            <img src="https://via.placeholder.com/50" alt="Badge 1">
+                            <img src="https://picsum.photos/50" alt="Badge 1">
                             <p class="mt-1">Start a Class</p>
                         </div>
                         <div class="col-md-3 text-center">
-                            <img src="https://via.placeholder.com/50" alt="Badge 2">
+                            <img src="https://picsum.photos/50" alt="Badge 2">
                             <p class="mt-1">Complete 3 Class</p>
                         </div>
                         <div class="col-md-3 text-center">
-                            <img src="https://via.placeholder.com/50" alt="Badge 3">
+                            <img src="https://picsum.photos/50" alt="Badge 3">
                             <p class="mt-1">Complete 5 Classes</p>
                         </div>
                         <div class="col-md-3 text-center">
-                            <img src="https://via.placeholder.com/50" alt="Badge 4">
+                            <img src="https://picsum.photos/50" alt="Badge 4">
                             <p class="mt-1">Complete 10 Classes</p>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                         <div class="mb-3 text-center">
                             <label for="profilePhoto" class="form-label">Photo Profile</label>
                             <div class="mb-3">
-                                <img id="currentPhoto" src="https://via.placeholder.com/100" alt="Current Profile" class="rounded-circle mb-3">
+                                <img id="currentPhoto" src="https://picsum.photos/100" alt="Current Profile" class="rounded-circle mb-3">
                                 <input type="file" class="form-control" id="profilePhoto" accept="image/*">
                             </div>
                         </div>

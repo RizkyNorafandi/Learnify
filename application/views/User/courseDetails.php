@@ -82,15 +82,14 @@
         <div class="col-md-8">
             <h3>Pelajari Kelas Ini</h3>
             <ul class="list-group">
-                
-                <li class="list-group-item custom-list-item d-flex align-items-center" onclick="window.location.href=''">
+                <a class="list-group-item custom-list-item d-flex align-items-center" href="">
                     <i class="bi bi-play-circle-fill me-3"></i>
                     <span>1. Pengenalan Figma dan Dasar-dasar Desain UI/UX</span>
-                </li>
-                <li class="list-group-item custom-list-item d-flex align-items-center">
+                </a>
+                <a class="list-group-item custom-list-item d-flex align-items-center" href="">
                     <i class="bi bi-play-circle-fill me-3"></i>
                     <span>2. Pengenalan Figma dan Dasar-dasar Desain UI/UX</span>
-                </li>
+                </a>
             </ul>
         </div>
         <div class="col-md-4 text-center">

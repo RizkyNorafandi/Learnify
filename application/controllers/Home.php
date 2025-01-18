@@ -7,17 +7,12 @@ class Home extends CI_Controller
     
     public function __construct() {
         parent::__construct();
-        
-        $this->session->userdata('userID') ? '' : redirect('login');
     }
     
 
     public function index() {
         $datas = array(
             'title' => 'Home',
-            'hidden' => '',
-            'color' => 'blue',
-            'is_login_page' => false,
         );
 
         $templates = array(
