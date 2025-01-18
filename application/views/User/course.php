@@ -17,14 +17,21 @@
                 foreach($courses as $index => $course): 
         ?>
             <a href="<?= base_url('course/details?id=' . $course->courseID) ?>" class="course-card">
+            <?php if ($course->courseTags): ?>
                 <div class="badge-container">
-                    <div class="badge">New</div>
+                    <?php 
+                        $categorys = explode(',', $course->courseCategory);
+                        foreach($categorys as $category):
+                    ?>
+                    <div class="badge"><?= strtoupper(trim($category)) ?></div>
                     <div class="badge secondary-badge">Popular</div>
+                    <?php endforeach; ?>
                 </div>
+                <?php endif; ?>
                 <img src="<?= base_url('assets/images/figma.png'); ?>" alt="Materi Pembelajaran" class="card-image-metod">
                 <div class="course-info">
-                    <h3>Beginner Figma Video Course</h3>
-                    <p>Mastering Figma, Desain UI/UX Profesional dan Efisien</p>
+                    <h3><?= $course->courseName ?></h3>
+                    <p><?= $course->courseDescription ?></p>
                 </div>
             </a>
         <?php 

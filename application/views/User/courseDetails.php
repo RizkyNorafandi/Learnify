@@ -1,4 +1,5 @@
 <!-- menambahkan baground fill ke section class hero-section -->
+ 
 <section class="background-fill">
     <div class="container pb-4">
         <header class="py-4">
@@ -31,7 +32,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Tentang Kami</a>
+                                <a class="nav-link" href="#">Learning</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= base_url('Home') ?>">Kontak</a>
@@ -81,7 +82,8 @@
         <div class="col-md-8">
             <h3>Pelajari Kelas Ini</h3>
             <ul class="list-group">
-                <li class="list-group-item custom-list-item d-flex align-items-center">
+                
+                <li class="list-group-item custom-list-item d-flex align-items-center" onclick="window.location.href=''">
                     <i class="bi bi-play-circle-fill me-3"></i>
                     <span>1. Pengenalan Figma dan Dasar-dasar Desain UI/UX</span>
                 </li>
