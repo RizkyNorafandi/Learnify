@@ -6,12 +6,15 @@ use chriskacerguis\RestServer\RestController;
 class Users extends RestController
 {
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
+        $this->load->model('userModel');
     }
 
     // Endpoint: GET /users
-    public function index_get() {
+    public function index_get()
+    {
         $id = $this->get('userID'); // Ambil parameter 'id' jika ada
 
         if ($id === NULL) {
@@ -34,12 +37,26 @@ class Users extends RestController
         }
     }
 
+    //Endpoint: GET /users/count 
+    public function count_get()
+    {
+        $user_count = $this->userModel->get_user_count();
+        $this->response([
+            'status' => TRUE,
+            'user_count' => $user_count
+        ], RestController::HTTP_OK);
+    }
+
     // Endpoint: POST /users
-    public function index_post() {
+    public function index_post()
+    {
         $data = [
-            'userFullname' => $this->post('userFullname'),
-            'userEmail' => $this->post('userEmail'),
-            'userPhone' => $this->post('userPhone'),
+            'userFullname' => $this->put('userFullname'),
+            'userEmail' => $this->put('userEmail'),
+            'userPhone' => $this->put('userPhone'),
+            'userPassword' => $this->put('userPassword'),
+            'userAddress' => $this->put('userAddress'),
+            'userPhoto' => $this->put('userPhoto'),
         ];
 
         // Masukkan data ke tabel user
@@ -51,7 +68,8 @@ class Users extends RestController
     }
 
     // Endpoint: PUT /users
-    public function index_put() {
+    public function index_put()
+    {
         $id = $this->put('userID');
         if (!$id) {
             $this->response(['message' => 'ID is required'], RestController::HTTP_BAD_REQUEST);
@@ -88,7 +106,8 @@ class Users extends RestController
     }
 
     // Endpoint: DELETE /users
-    public function index_delete() {
+    public function index_delete()
+    {
         $id = $this->delete('userID');
         if (!$id) {
             $this->response(['message' => 'ID is required'], RestController::HTTP_BAD_REQUEST);
@@ -105,7 +124,8 @@ class Users extends RestController
     }
 
     // Endpoint: POST /users/login
-    public function login_post() {
+    public function login_post()
+    {
         log_message('info', 'Login attempt started.');
 
         // Ambil input dari JSON body jika ada
@@ -159,7 +179,8 @@ class Users extends RestController
     }
 
     // Endpoint: POST /users/register
-    public function register_post() {
+    public function register_post()
+    {
         $data = [
             'userFullname' => $this->post('userFullname'),
             'userEmail' => $this->post('userEmail'),
@@ -192,7 +213,8 @@ class Users extends RestController
         }
     }
 
-    public function logout_post() {
+    public function logout_post()
+    {
         // Hapus session pengguna
         $this->session->unset_userdata('userID');
         $this->session->sess_destroy();

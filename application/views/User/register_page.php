@@ -21,7 +21,7 @@
                 </div>
             <?php endif; ?>
 
-            <form id="registerForm" method="post" action="<?= base_url('register/submit') ?>" class="flex flex-col gap-4">
+            <form id="registerForm" method="post" action="" class="flex flex-col gap-4">
                 <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
                 <input class="p-2 mt-4 rounded-xl border" type="text" id="userFullname" name="userFullname" placeholder="Full Name" required>
                 <input class="p-2 rounded-xl border" type="email" id="userEmail" name="userEmail" placeholder="Email" required>
@@ -44,3 +44,62 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', handleRegister);
+
+    function handleRegister(event) {
+        event.preventDefault();
+
+        const userFullname = document.getElementById('userFullname').value;
+        const userEmail = document.getElementById('userEmail').value;
+        const userPhone = document.getElementById('userPhone').value;
+        const userPassword = document.getElementById('userPassword').value;
+        const reenterPassword = document.getElementById('reenterPassword').value;
+
+        const csrfToken = document.querySelector('input[name="<?= $csrf_token_name; ?>"]').value;
+
+        fetch('<?php echo base_url('api/auth/register'); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    '<?= $csrf_token_name; ?>': csrfToken
+                },
+                body: JSON.stringify({
+                    userFullname,
+                    userEmail,
+                    userPhone,
+                    userPassword,
+                    reenterPassword
+                })
+            })
+
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    displayMessage('success', data.message);
+                } else {
+                    displayMessage('error', data.message);
+                }
+            })
+            .catch(error => {
+                displayMessage('error', 'An error occurred. Please try again.');
+            });
+
+    }
+
+    function displayMessage(type, message) {
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        if (type === 'success') {
+            successMessage.innerText = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        } else {
+            errorMessage.innerText = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+    }
+</script>

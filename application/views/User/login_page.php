@@ -35,14 +35,16 @@
 </section>
 
 <script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
+    document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+    function handleLogin(event) {
         event.preventDefault();
 
         const userEmail = document.getElementById('userEmail').value;
         const userPassword = document.getElementById('userPassword').value;
         const csrfToken = document.querySelector('input[name="<?= $csrf_token_name; ?>"]').value;
 
-        fetch('<?php echo base_url('auth/login_submit'); ?>', {
+        fetch('<?php echo base_url('api/auth/login'); ?>', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -56,19 +58,28 @@
             .then(response => response.json())
             .then(data => {
                 if (data.status) {
-                    document.getElementById('success-message').innerText = data.message;
-                    document.getElementById('success-message').style.display = 'block';
-                    document.getElementById('error-message').style.display = 'none';
+                    displayMessage('success', data.message);
                 } else {
-                    document.getElementById('error-message').innerText = data.message;
-                    document.getElementById('error-message').style.display = 'block';
-                    document.getElementById('success-message').style.display = 'none';
+                    displayMessage('error', data.message);
                 }
             })
             .catch(error => {
-                document.getElementById('error-message').innerText = 'An error occurred. Please try again.';
-                document.getElementById('error-message').style.display = 'block';
-                document.getElementById('success-message').style.display = 'none';
+                displayMessage('error', 'An error occurred. Please try again.');
             });
-    });
+    }
+
+    function displayMessage(type, message) {
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        if (type === 'success') {
+            successMessage.innerText = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        } else {
+            errorMessage.innerText = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+    }
 </script>

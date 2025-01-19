@@ -125,4 +125,13 @@ class Courses extends RestController
             ], RestController::HTTP_INTERNAL_ERROR);
         }
     }
+
+    public function count_get()
+    {
+        $course_count = $this->courseModel->get_course_count();
+        $this->response([
+            'status' => TRUE,
+            'course_count' => $course_count
+        ], RestController::HTTP_OK);
+    }
 }

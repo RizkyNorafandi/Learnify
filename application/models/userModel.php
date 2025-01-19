@@ -34,10 +34,14 @@ class UserModel extends CI_Model
         return false; // Jika tidak ada pengguna yang cocok atau password salah
     }
 
-    // Fungsi untuk logout (hanya menghapus session)
+
     public function logout()
     {
-        // Tidak ada operasi database yang diperlukan untuk logout
         return true;
+    }
+
+    public function get_user_count()
+    {
+        return $this->db->count_all('user');
     }
 }

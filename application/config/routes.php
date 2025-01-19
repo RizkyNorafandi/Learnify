@@ -60,22 +60,22 @@ $route['login'] = 'Auth/login';
 // $route['auth/login'] = 'api/auth/login'; // Rute untuk login
 // $route['auth/logout'] = 'api/auth/logout'; // Rute untuk logout
 
-$route['login'] = 'User/Auth';
+$route['login'] = 'Auth/login';
 $route['authLogin'] = 'User/Auth/login_submit';
 
 
-$route['register'] = 'user/register';
-$route['register/submit'] = 'user/register/submit_post';
+$route['register'] = 'Auth/register';
+// $route['register/submit'] = 'user/register/submit_post';
 
 $route['Home'] = 'User/Home/';
 
-$route['registerAPI'] = 'api/registerAPI/';
 
 
 
 // Dashboard
 $route['admin/login'] = 'dashboard/auth';
 $route['admin/course'] = 'dashboard/course';
+$route['admin/module'] = 'dashboard/module';
 $route['admin/dashboard'] = 'dashboard/dashboard';
 $route['admin/user'] = 'dashboard/user';
 

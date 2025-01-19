@@ -30,4 +30,9 @@ class CourseModel extends CI_Model
         $this->db->where('courseID', $courseID);
         return $this->db->update('course', $data);
     }
+
+    public function get_course_count()
+    {
+        return $this->db->count_all('course');
+    }
 }
