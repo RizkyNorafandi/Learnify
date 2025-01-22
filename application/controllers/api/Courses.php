@@ -1,11 +1,10 @@
 <?php
 
-use chriskacerguis\RestServer\RestController;
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Courses extends RestController
-{
+use chriskacerguis\RestServer\RestController;
+
+class Courses extends RestController {
 
     public function __construct()
     {
@@ -15,13 +14,13 @@ class Courses extends RestController
 
     public function index_get() {
 
-        $id = $this->get('id');
+        $courseID = $this->get('id');
 
-        $check_data = $this->db->get_where('course', ['courseID' => $id])->row_array();
+        $check_data = $this->db->get_where('course', ['courseID' => $courseID])->row_array();
 
-        if ($id) {
+        if ($courseID) {
             if ($check_data) {
-                $data = $this->db->get_where('course', ['courseID' => $id])->result();
+                $data = $this->courseModel->getCourses($courseID)->result();
 
                 $this->response([
                     'status' => true,
@@ -34,7 +33,7 @@ class Courses extends RestController
                 ], 404);
             }
         } else {
-            $data = $this->db->get('course')->result();
+            $data = $this->courseModel->getCourses()->result();
             $this->response([
                 'status' => true,
                 'data' => $data
@@ -51,6 +50,7 @@ class Courses extends RestController
             'courseDescription' => $this->post('courseDescription'),
             'coursePrice' => $this->post('coursePrice'),
             'courseTags' => $this->post('courseTags'),
+            
         ];
 
         $input = json_decode(trim(file_get_contents('php://input')), true);
@@ -128,6 +128,78 @@ class Courses extends RestController
             $this->response([
                 'status' => false,
                 'message' => 'Gagal memperbarui course. Silakan coba lagi.'
+            ], RestController::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    public function index_delete()
+    {
+        $courseID = $this->delete('id');
+
+        if (!$courseID) {
+            $this->response([
+                'status' => false,
+                'message' => 'ID course tidak ditemukan.'
+            ], RestController::HTTP_BAD_REQUEST);
+            return;
+        }
+
+        if ($this->courseModel->deleteCourse($courseID)) {
+            $this->response([
+                'status' => true,
+                'message' => 'Course berhasil dihapus!'
+            ], RestController::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Gagal menghapus course. Silakan coba lagi.'
+            ], RestController::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function addModule_post() {
+        $data = [
+            'courseID' => $this->post('courseID'),
+            'moduleIDs' => $this->post('moduleIDs'),
+        ];
+
+        $input = json_decode(trim(file_get_contents('php://input')), true);
+
+        $this->form_validation->set_data($input);
+
+        $this->form_validation->set_rules('courseID', 'ID Course', 'required|trim|numeric');
+        // $this->form_validation->set_rules('moduleIDs', 'Judul Modul', 'required|trim|max_length[100]');
+       
+        // Pesan kesalahan dalam bentuk array
+        $error_messages = array(
+            'required' => '{field} harus diisi.',
+            'max_length' => '{field} tidak boleh lebih dari {param} karakter.',
+            'numeric' => '{field} harus berupa angka.',
+        );
+
+        // Mengatur pesan kesalahan menggunakan array
+        foreach ($error_messages as $rule => $message) {
+            $this->form_validation->set_message($rule, $message);
+        }
+
+        // Validasi data di model
+        if ($this->form_validation->run() == FALSE) {
+            $this->response([
+                'status' => false,
+                'message' => validation_errors(),
+            ], RestController::HTTP_BAD_REQUEST);
+            return;
+        }
+        // Tambahkan data ke database
+        if ($this->courseModel->insertModule($data)) {
+            $this->response([
+                'status' => true,
+                'message' => 'Modul berhasil ditambahkan!'
+            ], RestController::HTTP_CREATED);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Gagal menambahkan modul. Silakan coba lagi.'
             ], RestController::HTTP_INTERNAL_ERROR);
         }
     }

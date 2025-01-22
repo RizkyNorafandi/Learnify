@@ -34,8 +34,7 @@ class Auth extends CI_Controller
         $this->load->view('master', $partials);
     }
 
-    public function login()
-    {
+    public function login() {
         // Validasi input
         $this->form_validation->set_rules('adminEmail', 'Email', 'required|trim|valid_email');
         $this->form_validation->set_rules('adminPassword', 'Password', 'required|trim');

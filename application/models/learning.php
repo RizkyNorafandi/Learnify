@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class courseModel extends CI_Model {
+class learning extends CI_Model {
 
     public function __construct()
     {
@@ -10,32 +10,32 @@ class courseModel extends CI_Model {
     }
 
     // Fungsi untuk mengambil semua data course
-    public function get_courses()
+    public function get_material()
     {
-        $query = $this->db->get('course');
+        $query = $this->db->get('material');
         return $query->result();
     }
 
     // Fungsi untuk mengambil course berdasarkan courseID dan moduleID
-    public function getCourses($courseID = NULL) {
-        if ($courseID) {
+    public function getMaterial($materialID = NULL) {
+        if ($materialID) {
             $this->db->select('
-                co.*, 
-                GROUP_CONCAT(mo.moduleID SEPARATOR "|") AS moduleIDs,
-                GROUP_CONCAT(mo.moduleName SEPARATOR "|") AS moduleNames,
-                GROUP_CONCAT(mo.moduleDescription SEPARATOR "|") AS moduleDescriptions
+                ma.*, 
+                GROUP_CONCAT(ma.materialID SEPARATOR "|") AS materialIDs,
+                GROUP_CONCAT(ma.materialName SEPARATOR "|") AS materialNames,
+                GROUP_CONCAT(ma.materialContent SEPARATOR "|") AS materialContent
             ');
-            $this->db->from('course co');
-            $this->db->join('course_has_module cm', 'cm.courseID = co.courseID', 'left');
-            $this->db->join('module mo', 'mo.moduleID = cm.moduleID', 'left');
-            $this->db->where('co.courseID', $courseID);
+            $this->db->from('material ma');
+            // $this->db->join('course_has_module cm', 'cm.courseID = co.courseID', 'left');
+            // $this->db->join('module mo', 'mo.moduleID = cm.moduleID', 'left');
+            $this->db->where('ma.materialID', $materialID);
             $query = $this->db->get();
         } else {
             $this->db->select('
-                co.*, 
-                GROUP_CONCAT(DISTINCT mo.moduleID SEPARATOR "|") AS moduleIDs,
-                GROUP_CONCAT(DISTINCT mo.moduleName SEPARATOR "|") AS moduleNames,
-                GROUP_CONCAT(DISTINCT mo.moduleDescription SEPARATOR "|") AS moduleDescriptions
+                ma.*, 
+                GROUP_CONCAT(ma.materialID SEPARATOR "|") AS materialIDs,
+                GROUP_CONCAT(ma.materialName SEPARATOR "|") AS materialNames,
+                GROUP_CONCAT(ma.materialContent SEPARATOR "|") AS materialContent
             ');
             $this->db->from('course co');
             $this->db->join('course_has_module cm', 'cm.courseID = co.courseID', 'left');
@@ -64,10 +64,5 @@ class courseModel extends CI_Model {
     {
         $this->db->where('courseID', $courseID);
         return $this->db->delete('course');
-    }
-
-    public function insertModule($moduleIDs)
-    {
-        return $this->db->insert_batch('course_has_module', $moduleIDs);
     }
 }

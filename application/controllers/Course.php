@@ -4,13 +4,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Course extends CI_Controller {
 
-    
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
         $this->session->userdata('userID') ?: redirect('login');
     }
-    
 
     public function index() {
         $ch = curl_init();
@@ -18,10 +15,11 @@ class Course extends CI_Controller {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($ch);
         curl_close($ch);
-        $courses = json_decode($output);
+        $courses = json_decode($output)->data;
         
         $datas = array(
-            'courses' => $courses->data,
+            'title' => 'Course',
+            'courses' => $courses,
         );
 
         $templates = array(
@@ -44,12 +42,13 @@ class Course extends CI_Controller {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($ch);
         curl_close($ch);
-        $course = json_decode($output);
+        $course = json_decode($output)->data[0];
 
         $datas = array(
-            'course' => $course->data[0],
+            'title' => $course->courseName,
+            'course' => $course,
         );
-        
+
         $templates = array(
             'head' => 'Templates/User/head',
             'navbar' => '',
@@ -61,6 +60,8 @@ class Course extends CI_Controller {
         $this->load->vars($datas);
         $this->load->view('masterUser', $templates);
     }
+
+
 
 }
 

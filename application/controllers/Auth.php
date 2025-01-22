@@ -73,7 +73,7 @@ class Auth extends CI_Controller {
 
     public function registerPage() {
         $datas = array(
-            'title' => 'Login',
+            'title' => 'Register',
             'hidden' => '',
             'color' => 'blue',
             'is_login_page' => true,
