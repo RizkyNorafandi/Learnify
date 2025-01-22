@@ -10,7 +10,7 @@ class Dashboard extends CI_Controller
     {
         parent::__construct();
         $this->load->model('courseModel');
-        AdminMiddleware::is_logged_in();
+        $this->session->userdata('adminId') ?: redirect('admin/login');
     }
 
 

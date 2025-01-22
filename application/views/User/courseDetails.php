@@ -1,11 +1,12 @@
 <!-- menambahkan baground fill ke section class hero-section -->
+ 
 <section class="background-fill">
     <div class="container pb-4">
         <header class="py-4">
             <nav class="navbar navbar-expand-lg bg-white mx-auto shadow-sm border">
                 <div class="container-fluid px-5">
                     <div class="navbar-brand">
-                        <img src="<?= base_url('assets/images/logo.png') ?>" alt="Logo" width="180px" />
+                        <img src="<?= base_url('assets/images/logo_with_text.png') ?>" alt="Logo" width="180px" />
                     </div>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0 mx-auto d-flex grid gap-5">
@@ -31,7 +32,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#">Tentang Kami</a>
+                                <a class="nav-link" href="#">Learning</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="<?= base_url('Home') ?>">Kontak</a>
@@ -59,13 +60,18 @@
                     alt="Course Banner">
             </div>
             <div class="col-md-6 order-md-2 order-1">
-                <h2>Mastering Figma, Desain UI/UX Profesional dan Efisien</h2>
-                <p>Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet</p>
+                <h2><?= $course->courseName ?></h2>
+                <p><?= $course->courseDescription ?></p>
+                <?php if ($course->courseTags): ?>
                 <div class="d-flex gap-3">
-                    <span class="badge">FIGMA</span>
-                    <span class="badge">DESIGN</span>
-                    <span class="badge">UI/UX</span>
+                    <?php 
+                        $tags = explode(',', $course->courseTags);
+                        foreach($tags as $tag):
+                    ?>
+                    <span class="badge"><?= strtoupper(trim($tag)) ?></span>
+                    <?php endforeach; ?>
                 </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -76,21 +82,21 @@
         <div class="col-md-8">
             <h3>Pelajari Kelas Ini</h3>
             <ul class="list-group">
-                <li class="list-group-item custom-list-item d-flex align-items-center">
+                <a class="list-group-item custom-list-item d-flex align-items-center" href="">
                     <i class="bi bi-play-circle-fill me-3"></i>
                     <span>1. Pengenalan Figma dan Dasar-dasar Desain UI/UX</span>
-                </li>
-                <li class="list-group-item custom-list-item d-flex align-items-center">
+                </a>
+                <a class="list-group-item custom-list-item d-flex align-items-center" href="">
                     <i class="bi bi-play-circle-fill me-3"></i>
                     <span>2. Pengenalan Figma dan Dasar-dasar Desain UI/UX</span>
-                </li>
+                </a>
             </ul>
         </div>
         <div class="col-md-4 text-center">
             <div class="subs-box p-3 border rounded">
                 <h4 class="fw-bold">You're One Step Away!</h4>
                 <p>4 Module, 3 Hours 33 Minutes</p>
-                <p class="fw-bold">Rp. 999.999,00</p>
+                <p class="fw-bold">Rp. <?= number_format($course->coursePrice, 0, ',', '.') ?></p>
                 <button class="get-started btn">Get Started!</button>
             </div>
         </div>

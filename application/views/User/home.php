@@ -131,7 +131,7 @@
             <p class="contact-description">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             </p>
-            <form action="#" method="POST">
+            <form action="<?= base_url('user/Home/sendEmail') ?>" method="POST">
                 <div class="input-group-contact">
                     <input type="text" name="name" placeholder="Your name" required />
                 </div>

@@ -54,22 +54,9 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // User
-$route['login'] = 'Auth/login';
-
-
-// $route['auth/login'] = 'api/auth/login'; // Rute untuk login
-// $route['auth/logout'] = 'api/auth/logout'; // Rute untuk logout
-
-$route['login'] = 'Auth/login';
-$route['authLogin'] = 'User/Auth/login_submit';
-
-
-$route['register'] = 'Auth/register';
-// $route['register/submit'] = 'user/register/submit_post';
-
-$route['Home'] = 'User/Home/';
-
-
+$route['login'] = 'auth/loginPage';
+$route['register'] = 'auth/registerPage';
+$route['logout'] = 'auth/logout';
 
 
 // Dashboard
@@ -78,17 +65,11 @@ $route['admin/course'] = 'dashboard/course';
 $route['admin/module'] = 'dashboard/module';
 $route['admin/dashboard'] = 'dashboard/dashboard';
 $route['admin/user'] = 'dashboard/user';
+$route['admin/material'] = 'dashboard/Material';
 
 $route['admin/login_post'] = 'dashboard/auth/login';
 $route['admin/logout'] = 'dashboard/auth/logout';
 
 $route['course/update'] = 'dashboard/course/update';
 $route['course/store'] = 'dashboard/course/store';
-$route['course/drop'] = 'dashboard/course/delete';
-
-$route['course/drop'] = 'dashboard/course/delete'; 
-
-// $route['api/getCourse'] = 'api/CourseAPI';
-// $route['api/getCourse/(:num)'] = 'api/CourseAPI/course/$1';
-// $route['api/putCourses/(:num)'] = 'api/CourseAPI/course_put/$1';
-// $route['api/courses/(:num)']['DELETE'] = 'CourseAPI/course_delete/$1';
+$route['course/drop'] = 'Dashboard/Course/delete';

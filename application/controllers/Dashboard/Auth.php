@@ -19,7 +19,7 @@ class Auth extends CI_Controller
             'title' => 'Login admin',
             'hidden' => '',
             'color' => 'blue',
-            'is_login_page' => true, // Indikator halaman login
+            'is_login_page' => true,
             'csrf_token_name' => $this->security->get_csrf_token_name(),
             'csrf_hash' => $this->security->get_csrf_hash(),
         );
@@ -45,59 +45,59 @@ class Auth extends CI_Controller
         if ($this->form_validation->run() == FALSE) {
             $this->session->set_flashdata('error', validation_errors());
             redirect('admin/login');
+        } else {
+            $data = [
+                'adminEmail' => $this->input->post('adminEmail'),
+                'adminPassword' => $this->input->post('adminPassword'),
+                'ip_address' => $this->input->ip_address()
+            ];
+
+            // Inisialisasi cURL
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'http://localhost/learnify/api/Admins/login');
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                'Content-Type: application/json',
+                'X-CSRF-TOKEN: ' . $this->security->get_csrf_hash()
+            ));
+
+            // Eksekusi cURL dan dapatkan respons
+            $response = curl_exec($ch);
+
+            // Cek error cURL
+            if (curl_errno($ch)) {
+                log_message('error', 'cURL error: ' . curl_error($ch));
+                $this->session->set_flashdata('error', 'Login failed. Please try again later.');
+                redirect('admin/login');
+            }
+
+            // Dapatkan kode status HTTP
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            // Log response for debugging
+            log_message('debug', 'API Response: ' . $response);
+
+            if ($http_code == 200) {
+                $result = json_decode($response);
+                if (isset($result->data->adminId)) {
+                    $this->session->set_userdata('adminId', $result->data->adminId);
+                    $this->session->set_userdata('adminEmail', $result->data->adminEmail);
+                    log_message('debug', 'Login successful: ' . print_r($result->data, true));
+                    redirect('admin/dashboard');
+                } else {
+                    $this->session->set_flashdata('error', 'Login failed. Invalid response from server.');
+                    redirect('admin/login');
+                }
+            } else {
+                $this->session->set_flashdata('error', 'Login failed. ' . $response);
+                redirect('admin/login');
+            }
         }
-
-        $adminEmail = $this->input->post('adminEmail');
-        $adminPassword = $this->input->post('adminPassword');
-        $ip_address = $this->input->ip_address();
-
-        // Cek Brute Force
-        if ($this->adminModel->is_brute_force($ip_address, $adminEmail)) {
-            $this->session->set_flashdata('error', 'Terlalu banyak percobaan login. Coba lagi nanti.');
-            redirect('admin/login');
-        }
-
-        // Verifikasi Admin
-        $admin = $this->adminModel->get_admin($adminEmail);
-        if (!$admin) {
-            log_message('error', 'Admin tidak ditemukan.');
-            $this->session->set_flashdata('error', 'Email tidak terdaftar.');
-            redirect('admin/login');
-        }
-
-        // Debugging hash
-        log_message('debug', 'Hash password dari database: ' . $admin->adminPassword);
-
-        // Verifikasi password
-        if (!password_verify($adminPassword, $admin->adminPassword)) {
-            log_message('error', 'Password salah untuk email: ' . $adminEmail);
-            $this->adminModel->log_attempt($ip_address, $adminEmail);
-            $this->session->set_flashdata('error', 'Email atau password salah.');
-            redirect('admin/login');
-        }
-
-
-        // Periksa Status Admin
-        if ($admin->status !== 'active') {
-            $this->session->set_flashdata('error', 'Akun ini tidak aktif.');
-            redirect('admin/login');
-        }
-
-        // Login berhasil: Simpan data ke session
-        $this->session->set_userdata([
-            'adminId' => $admin->adminId,
-            'adminName' => $admin->adminName,
-            'adminEmail' => $admin->adminEmail,
-            'is_admin_logged_in' => true
-        ]);
-
-        // Hapus login attempts
-        $this->adminModel->clear_attempts($ip_address, $adminEmail);
-
-        // Tambahkan flashdata untuk pesan sukses
-        $this->session->set_flashdata('success', 'Login berhasil! Selamat datang, ' . $admin->adminName . '.');
-        redirect('admin/dashboard');
     }
+
 
 
     public function logout()

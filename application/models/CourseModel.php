@@ -4,20 +4,19 @@ use SebastianBergmann\Environment\Console;
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class CourseModel extends CI_Model
+class courseModel extends CI_Model
 {
 
     public function __construct()
     {
         parent::__construct();
-        $this->load->database();
     }
 
     // Fungsi untuk mengambil semua data course
     public function get_courses()
     {
-        $query = $this->db->get('course'); // Mengambil semua data dari tabel course
-        return $query->result(); // Mengembalikan hasil sebagai array objek
+        $query = $this->db->get('course');
+        return $query->result();
     }
 
     public function insertCourse($data)
@@ -29,6 +28,13 @@ class CourseModel extends CI_Model
     {
         $this->db->where('courseID', $courseID);
         return $this->db->update('course', $data);
+    }
+
+    public function deleteCourse($courseID)
+    {
+        $this->db->where('courseID', $courseID);
+        $this->db->delete('course');
+        return $this->db->affected_rows();
     }
 
     public function get_course_count()

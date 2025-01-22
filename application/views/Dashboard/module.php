@@ -45,7 +45,7 @@
                             <td class="py-6 px-6 border-b"><?= isset($module->moduleTags) ? html_escape($module->moduleTags) : 'N/A' ?></td>
                             <td class="py-6 px-6 border-b"><?= !empty($module->moduleDescription) ? html_escape($module->moduleDescription) : 'Deskripsi tidak tersedia' ?></td>
                             <td class="py-6 px-6 border-b">
-                                <button class="text-green-600 hover:underline open-modal" data-module-id="<?= $module->moduleID ?>" data-module-name="<?= html_escape($module->moduleName) ?>" data-module-category="<?= html_escape($module->moduleTags)  ?>" data-module-description="<?= html_escape($module->moduleDescription) ?>">Edit</button> |
+                                <button class="text-green-600 hover:underline open-modal" data-module-id="<?= $module->moduleID ?>" data-module-name="<?= html_escape($module->moduleName) ?>" data-module-tags="<?= html_escape($module->moduleTags)  ?>" data-module-description="<?= html_escape($module->moduleDescription) ?>">Edit</button> |
                                 <button class="text-red-600 hover:underline openModalButton" data-module-id="<?= $module->moduleID ?>">Hapus</button>
                             </td>
                         </tr>
@@ -61,79 +61,59 @@
 </section>
 
 <!-- Modal Tambah -->
-<div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg w-1/3">
-        <h2 class="text-xl font-bold mb-4">Tambah Course</h2>
-        <form action="<?= site_url('course/store') ?>" method="post">
-            <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
+<div id="addModal" class="modal fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+    <div class="bg-white w-full max-w-lg p-6 rounded-sm relative">
+        <button id="closeAddModal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+            &#x2715;
+        </button>
+        <h2 class="text-xl font-bold mb-4">Tambah Module</h2>
+        <form action="<?= site_url('dashboard/Module/store') ?>" method="post">
+            <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
             <div class="mb-4">
-                <label for="addCourseName" class="block text-sm font-medium text-gray-700">Nama Course</label>
-                <input required type="text" id="addCourseName" name="courseName" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <label for="moduleName" class="block text-sm font-medium text-gray-700">Nama Modul</label>
+                <input type="text" id="moduleName" name="moduleName" class="mt-1 px-4 py-2 border rounded w-full" required>
             </div>
+
             <div class="mb-4">
-                <label for="addClassCategory" class="block text-sm font-medium text-gray-700">Kategori</label>
-                <select required id="addClassCategory" name="classCategory" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    <option value="" disabled selected>Pilih Kategori</option>
-                    <option value="1">Kategori 1</option>
-                    <option value="2">Kategori 2</option>
-                    <option value="3">Kategori 3</option>
-                    <option value="4">Kategori 4</option>
-                    <option value="5">Kategori 5</option>
-                </select>
+                <label for="moduleTags" class="block text-sm font-medium text-gray-700">Tags Modul</label>
+                <input type="text" id="moduleTags" name="moduleTags" class="mt-1 px-4 py-2 border rounded w-full">
+                <small class="text-gray-500">Pisahkan tag dengan koma (misal: tag1, tag2, tag3).</small>
             </div>
+
             <div class="mb-4">
-                <label for="addCourseDescription" class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                <textarea id="addCourseDescription" name="courseDescription" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
+                <label for="moduleDescription" class="block text-sm font-medium text-gray-700">Deskripsi Modul</label>
+                <textarea id="moduleDescription" name="moduleDescription" class="mt-1 px-4 py-2 border rounded w-full" rows="4"></textarea>
             </div>
-            <div class="mb-4">
-                <label for="addCoursePrice" class="block text-sm font-medium text-gray-700">Harga</label>
-                <input required type="number" id="addCoursePrice" name="coursePrice" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-            </div>
-            <div class="mb-4">
-                <label for="addCourseTags" class="block text-sm font-medium text-gray-700">Tags</label>
-                <input required type="text" id="addCourseTags" name="courseTags" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-            </div>
+
             <div class="flex justify-end">
-                <button type="button" id="closeAddModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
+                <button type="button" id="cancelAddModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Save</button>
             </div>
         </form>
     </div>
 </div>
 
+
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
-    <div class="bg-white p-6 rounded-lg w-1/3">
-        <h2 class="text-xl font-bold mb-4">Edit Course</h2>
-        <form action="<?= site_url('course/update') ?>" method="post">
-            <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
-            <input type="hidden" name="courseID" id="modal-courseID">
+    <div class="modal-overlay absolute w-full h-full bg-white p-6 rounded-lg w-1/3">
+        <h2 class="text-xl font-bold mb-4">Edit Module</h2>
+        <form action="<?= site_url('dashboard/module/update') ?>" method="post">
+            <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+            <input type="hidden" name="moduleID" id="modal-moduleID">
             <div class="mb-4">
-                <label for="courseName" class="block text-sm font-medium text-gray-700">Nama Course</label>
-                <input required type="text" id="modal-courseName" name="courseName" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <label for="moduleName" class="block text-sm font-medium text-gray-700">Nama Modul</label>
+                <input type="text" id="modal-moduleName" name="moduleName" class="mt-1 px-4 py-2 border rounded w-full" required>
             </div>
             <div class="mb-4">
-                <label for="classCategory" class="block text-sm font-medium text-gray-700">Kategori</label>
-                <select required id="modal-classCategory" name="classCategory" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-                    <option value="" disabled selected>Pilih Kategori</option>
-                    <option value="1">Kategori 1</option>
-                    <option value="2">Kategori 2</option>
-                    <option value="3">Kategori 3</option>
-                    <option value="4">Kategori 4</option>
-                    <option value="5">Kategori 5</option>
-                </select>
+                <label for="moduleTags" class="block text-sm font-medium text-gray-700">Tags Modul</label>
+                <input type="text" id="modal-moduleTags" name="moduleTags" class="mt-1 px-4 py-2 border rounded w-full">
+                <small class="text-gray-500">Pisahkan tag dengan koma (misal: tag1, tag2, tag3).</small>
             </div>
             <div class="mb-4">
-                <label for="courseDescription" class="block text-sm font-medium text-gray-700">Deskripsi</label>
-                <textarea id="modal-courseDescription" name="courseDescription" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"></textarea>
-            </div>
-            <div class="mb-4">
-                <label for="coursePrice" class="block text-sm font-medium text-gray-700">Harga</label>
-                <input required type="number" id="modal-coursePrice" name="coursePrice" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
-            </div>
-            <div class="mb-4">
-                <label for="courseTags" class="block text-sm font-medium text-gray-700">Tags</label>
-                <input required type="text" id="modal-courseTags" name="courseTags" class="mt-1 block w-full rounded-sm border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                <label for="moduleDescription" class="block text-sm font-medium text-gray-700">Deskripsi Modul</label>
+                <textarea id="modal-moduleDescription" name="moduleDescription" class="mt-1 px-4 py-2 border rounded w-full" rows="4"></textarea>
             </div>
             <div class="flex justify-end">
                 <button type="button" id="closeEditModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
@@ -142,6 +122,7 @@
         </form>
     </div>
 </div>
+
 
 <!-- Delete Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
@@ -175,22 +156,18 @@
         const editModal = $('#editModal');
         const closeEditModal = $('#closeEditModal');
         const modalInputs = {
-            courseID: $('#modal-courseID'),
-            courseName: $('#modal-courseName'),
-            classCategory: $('#modal-classCategory'),
-            courseDescription: $('#modal-courseDescription'),
-            coursePrice: $('#modal-coursePrice'),
-            courseTags: $('#modal-courseTags'),
+            moduleID: $('#modal-moduleID'),
+            moduleName: $('#modal-moduleName'),
+            moduleTags: $('#modal-moduleTags'),
+            moduleDescription: $('#modal-moduleDescription'),
         };
 
         $('.open-modal').on('click', function() {
             const button = $(this);
-            modalInputs.courseID.val(button.data('course-id'));
-            modalInputs.courseName.val(button.data('course-name'));
-            modalInputs.classCategory.val(button.data('course-category'));
-            modalInputs.courseDescription.val(button.data('course-description'));
-            modalInputs.coursePrice.val(button.data('course-price'));
-            modalInputs.courseTags.val(button.data('course-tags'));
+            modalInputs.moduleID.val(button.data('module-id'));
+            modalInputs.moduleName.val(button.data('module-name'));
+            modalInputs.moduleTags.val(button.data('module-tags'));
+            modalInputs.moduleDescription.val(button.data('module-description'));
 
             editModal.removeClass('hidden');
         });

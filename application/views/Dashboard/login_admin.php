@@ -19,12 +19,10 @@
                 </div>
             <?php endif; ?>
 
-            <form id="loginAdminForm" method="post" action="<?php echo base_url('admin/login_post') ?>" class="flex flex-col gap-4">
-                <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
+            <form id="loginAdminForm" method="post" action="<?= base_url('dashboard/auth/login') ?>" class="flex flex-col gap-4">
+                <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>" />
                 <input class="p-2 mt-8 rounded-xl border" type="email" name="adminEmail" id="adminEmail" placeholder="Email" required>
-                <div class="relative">
-                    <input class="p-2 rounded-xl border w-full" type="password" name="adminPassword" id="adminPassword" placeholder="Password" required>
-                </div>
+                <input class="p-2 rounded-xl border w-full" type="password" name="adminPassword" id="adminPassword" placeholder="Password" required>
                 <button type="submit" class="bg-[#002D74] rounded-xl text-white py-2 hover:scale-105 duration-300">Login</button>
             </form>
         </div>
@@ -35,3 +33,20 @@
         </div>
     </div>
 </div>
+
+<script>
+    function displayMessage(type, message) {
+        const successMessage = document.getElementById('success-message');
+        const errorMessage = document.getElementById('error-message');
+
+        if (type === 'success') {
+            successMessage.innerText = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        } else {
+            errorMessage.innerText = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+        }
+    }
+</script>

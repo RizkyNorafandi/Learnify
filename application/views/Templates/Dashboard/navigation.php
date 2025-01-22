@@ -19,8 +19,16 @@
                 <span class="ml-4 text-sm">Course</span>
             </a>
             <a href="<?= site_url('admin/module') ?>" class="flex items-center p-2.5 mt-2 rounded-md px-4 duration-300 hover:bg-blue-600">
-                <i class="bi bi-file-earmark"></i>
+                <i class="bi bi-file-earmark-fill"></i>
                 <span class="ml-4 text-sm">Module</span>
+            </a>
+            <a href="<?= site_url('admin/user') ?>" class="flex items-center p-2.5 mt-2 rounded-md px-4 duration-300 hover:bg-blue-600">
+                <i class="bi bi-person-fill"></i>
+                <span class="ml-4 text-sm">User</span>
+            </a>
+            <a href="<?= site_url('admin/material') ?>" class="flex items-center p-2.5 mt-2 rounded-md px-4 duration-300 hover:bg-blue-600">
+                <i class="bi bi-box"></i>
+                <span class="ml-4 text-sm">Material</span>
             </a>
             <a href="<?= site_url('admin/user') ?>" class="flex items-center p-2.5 mt-2 rounded-md px-4 duration-300 hover:bg-blue-600">
                 <i class="bi bi-person-fill"></i>

@@ -1,15 +1,8 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class UserModel extends CI_Model
+class userModel extends CI_Model
 {
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->load->database();
-    }
-
     // Fungsi untuk mendaftar pengguna baru
     public function register($data)
     {
@@ -19,19 +12,17 @@ class UserModel extends CI_Model
     }
 
     // Fungsi untuk login
-    public function login($email, $password)
-    {
+    public function login($email, $password) {
         $this->db->where('userEmail', $email);
         $query = $this->db->get('user');
 
         if ($query->num_rows() == 1) {
             $user = $query->row();
-            // Verifikasi password
             if (password_verify($password, $user->userPassword)) {
-                return $user; // Kembalikan data pengguna jika password cocok
+                return $user;
             }
         }
-        return false; // Jika tidak ada pengguna yang cocok atau password salah
+        return false;
     }
 
 

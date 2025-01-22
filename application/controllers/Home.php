@@ -5,24 +5,17 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Home extends CI_Controller
 {
     
-    public function __construct()
-    {
+    public function __construct() {
         parent::__construct();
-        
-        $this->session->userdata('userFullname') ? '' : redirect('login');
     }
     
 
-    public function index()
-    {
+    public function index() {
         $datas = array(
             'title' => 'Home',
-            'hidden' => '',
-            'color' => 'blue',
-            'is_login_page' => false,
         );
 
-        $partials = array(
+        $templates = array(
             'head' => 'templates/user/head',
             'navbar' => 'templates/user/navbar',
             'content' => 'user/home',
@@ -31,7 +24,7 @@ class Home extends CI_Controller
         );
 
         $this->load->vars($datas);
-        $this->load->view('master_user', $partials);
+        $this->load->view('masterUser', $templates);
     }
 }
 

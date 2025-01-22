@@ -3,13 +3,14 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class adminModel extends CI_Model
 {
-
     /**
      * Ambil data admin berdasarkan email
      */
     public function get_admin($adminEmail)
     {
-        return $this->db->get_where('admin', ['adminEmail' => $adminEmail])->row();
+        $admin = $this->db->get_where('admin', ['adminEmail' => $adminEmail])->row();
+        log_message('debug', 'Admin Query Result: ' . print_r($admin, true));
+        return $admin;
     }
 
     /**
@@ -19,7 +20,8 @@ class adminModel extends CI_Model
     {
         $this->db->insert('login_attempts', [
             'ip_address' => $ip_address,
-            'username' => $adminEmail
+            'username' => $adminEmail,
+            'attempt_time' => date('Y-m-d H:i:s') // Tambahkan waktu percobaan
         ]);
     }
 
@@ -29,8 +31,10 @@ class adminModel extends CI_Model
     public function is_brute_force($ip_address, $adminEmail)
     {
         $this->db->where('ip_address', $ip_address);
+        $this->db->where('username', $adminEmail); // Cek juga berdasarkan email
         $this->db->where('attempt_time >=', date('Y-m-d H:i:s', strtotime('-15 minutes')));
         $attempts = $this->db->get('login_attempts')->num_rows();
+
         return $attempts >= 5; // Maksimal 5 percobaan dalam 15 menit
     }
 

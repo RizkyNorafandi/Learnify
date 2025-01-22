@@ -53,7 +53,7 @@
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" class="py-6 px-6 text-center">Tidak ada data course.</td>
+                            <td colspan="8" class="py-6 px-6 text-center">Tidak ada data User.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>

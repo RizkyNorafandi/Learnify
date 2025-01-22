@@ -1,5 +1,4 @@
 <?php
-require_once APPPATH . 'libraries/AdminMiddleware.php';
 defined('BASEPATH') or exit('No direct script access allowed');
 
 class User extends CI_Controller
@@ -8,9 +7,8 @@ class User extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('userModel'); // Memuat model
-        $this->load->library('form_validation');
-        AdminMiddleware::is_logged_in();
+        $this->load->model('courseModel');
+        $this->session->userdata('adminId') ?: redirect('admin/login');
     }
 
     public function index()
@@ -27,7 +25,7 @@ class User extends CI_Controller
             'title' => ' Daftar User',
             'hidden' => '',
             'color' => 'blue',
-            'users' => $users,
+            'users' => $users
         );
 
         $partials = array(

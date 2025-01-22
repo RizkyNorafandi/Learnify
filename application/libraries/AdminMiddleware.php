@@ -10,8 +10,8 @@ class AdminMiddleware
     public static function is_logged_in()
     {
         $ci = &get_instance();
+        log_message('debug', 'Session data: ' . print_r($ci->session->userdata(), true));
         if (!$ci->session->userdata('is_admin_logged_in')) {
-            // Jika belum login, redirect ke halaman login
             redirect('admin/login');
         }
     }
