@@ -50,16 +50,16 @@
             </div>
             <div class="col-12 col-lg-6 d-flex flex-column justify-content-between py-0 py-lg-2">
                 <div>
-                    <h2><?= $course->courseName ?></h2>
-                    <p><?= $course->courseDescription ?></p>
+                    <h2><?= htmlspecialchars($course->courseName, ENT_QUOTES, 'UTF-8') ?></h2>
+                    <p><?= htmlspecialchars($course->courseDescription, ENT_QUOTES, 'UTF-8') ?></p>
                 </div>
-                <?php if ($course->courseTags): ?>
+                <?php if (!empty($course->courseTags)): ?>
                 <div class="d-flex gap-3">
                     <?php 
                         $tags = explode(',', $course->courseTags);
                         foreach($tags as $tag):
                     ?>
-                    <span class="badge"><?= strtoupper(trim($tag)) ?></span>
+                    <span class="badge"><?= strtoupper(trim(htmlspecialchars($tag, ENT_QUOTES, 'UTF-8'))) ?></span>
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
@@ -74,6 +74,11 @@
             <h3>Course Modules</h3>
             <div class="accordion accordion-flush d-flex flex-column gap-4" id="accordionFlushExample">
                 <?php
+
+// var_dump($course->moduleIDs);
+// var_dump($course->moduleNames);
+// var_dump($course->moduleDescriptions);
+
                     $moduleIDs = !empty($course->moduleIDs) ? explode('|', $course->moduleIDs) : [];
                     $moduleNames = !empty($course->moduleNames) ? explode('|', $course->moduleNames) : [];
                     $moduleDescriptions = !empty($course->moduleDescriptions) ? explode('|', $course->moduleDescriptions) : [];
@@ -88,25 +93,27 @@
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#flush-collapse<?= $moduleID ?>" aria-expanded="false" aria-controls="flush-collapse<?= $moduleID ?>">
-                            <?= $moduleName ?>
+                            <?= htmlspecialchars($moduleName, ENT_QUOTES, 'UTF-8') ?>
                         </button>
                     </h2>
                     <div id="flush-collapse<?= $moduleID ?>" class="accordion-collapse collapse"
                         data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body"><?= $moduleDescription ?></div>
+                        <div class="accordion-body"><?= htmlspecialchars($moduleDescription, ENT_QUOTES, 'UTF-8') ?></div>
                     </div>
                 </div>
                 <?php endfor; ?>
             </div>
         </div>
         <div class="col-md-4 text-center">
-            <div class="subs-box p-3 border rounded">
-                <h4 class="fw-bold">You're One Step Away!</h4>
-                <p>4 Module, 3 Hours 33 Minutes</p>
-                <p class="fw-bold">Rp. <?= number_format($course->coursePrice, 0, ',', '.') ?></p>
-                <!-- <button class="get-started btn">Get Started!</button> -->
-                <a href="<?= base_url('learning') ?>" class="get-started btn">Get Started!</a>
-            </div>
+    <div class="subs-box p-3 border rounded">
+        <h4 class="fw-bold">You're One Step Away!</h4>
+        <p>4 Module, 3 Hours 33 Minutes</p>
+        <p class="fw-bold">Rp. <?= number_format($course->coursePrice, 0, ',', '.') ?></p>
+        <!-- <button class="get-started btn">Get Started!</button> -->
+        <a href="<?= base_url('learning?courseID='.$courseID.'&materialID='.$materialID) ?>" class="btn btn-primary get-started">Get Started!</a>
+    </div>
+</div>
+        </div>
         </div>
     </div>
 </section>

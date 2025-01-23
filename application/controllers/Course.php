@@ -47,6 +47,8 @@ class Course extends CI_Controller {
         $datas = array(
             'title' => $course->courseName,
             'course' => $course,
+            'courseID' => $course->courseID,
+            'materialID' => $course->modules[0]->materials[0]->materialID,
         );
 
         $templates = array(

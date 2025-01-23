@@ -31,4 +31,26 @@ class userModel extends CI_Model
         // Tidak ada operasi database yang diperlukan untuk logout
         return true;
     }
+
+    public function getUser($userID = NULL) {
+        if ($userID) {
+            $this->db->where('userID', $userID);
+            $query = $this->db->get('user');
+            return $query->row();
+        } else {
+            $query = $this->db->get('user');
+            return $query->result();
+        }
+    }
+
+    public function updateUser($userID, $data) {
+        $this->db->where('userID', $userID);
+        return $this->db->update('user', $data);
+    }
+
+    public function deleteUser($userID) {
+        $this->db->where('userID', $userID);
+        return $this->db->delete('user');
+    }
+
 }

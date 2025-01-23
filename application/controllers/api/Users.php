@@ -22,7 +22,7 @@ class Users extends RestController {
 
     // Endpoint: GET /users
     public function index_get() {
-        $id = $this->get('userID'); // Ambil parameter 'id' jika ada
+        $id = $this->get('id'); // Ambil parameter 'id' jika ada
 
         if ($id === NULL) {
             // Jika tidak ada ID, ambil semua data
@@ -62,7 +62,7 @@ class Users extends RestController {
 
     // Endpoint: PUT /users
     public function index_put() {
-        $id = $this->put('userID');
+        $id = $this->put('id');
         if (!$id) {
             $this->response(['message' => 'ID is required'], RestController::HTTP_BAD_REQUEST);
             return;
@@ -99,7 +99,7 @@ class Users extends RestController {
 
     // Endpoint: DELETE /users
     public function index_delete() {
-        $id = $this->delete('userID');
+        $id = $this->delete('id');
         if (!$id) {
             $this->response(['message' => 'ID is required'], RestController::HTTP_BAD_REQUEST);
             return;

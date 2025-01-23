@@ -28,7 +28,7 @@
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
-                <img src="<?= base_url('assets/images/figma.png'); ?>" alt="Materi Pembelajaran"
+                <img src="<?= base_url($course->courseThumbnail); ?>" alt="<?= $course->courseName ?>"
                     class="card-image-metod">
                 <div class="course-info">
                     <h3><?= $course->courseName ?></h3>

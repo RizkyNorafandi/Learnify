@@ -88,9 +88,9 @@ class Modules extends RestController {
         $moduleID = $this->get('id');
 
         if ($moduleID) {
-            $data = $this->moduleModel->getModules($moduleID);
+            $data = $this->moduleModel->getModules($moduleID) ->result();
         } else {
-            $data = $this->moduleModel->getModules();
+            $data = $this->moduleModel->getModules()->result();
         }
 
         $this->form_validation->set_data(['id' => $moduleID ?: NULL]);

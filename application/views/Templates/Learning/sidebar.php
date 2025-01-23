@@ -2,7 +2,7 @@
 <aside>
     <div class="container-fluid h-100 d-flex flex-column p-0">
         <div class="box p-4">
-            <h4>Mastering Figma, Desain UI/UX Profesional dan Efisien</h4>
+            <h4><?= $title ?></h4>
             <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="25"
                 aria-valuemin="0" aria-valuemax="100">
                 <div class="progress-bar" style="width: 25%"></div>
@@ -11,84 +11,42 @@
         </div>
         <!-- Batas progress dengan sub modul -->
         <div class="accordion overflow-y-auto" id="accordionExample">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                        Pengantar Figma
-                    </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show">
-                    <div class="accordion-body">
-                        <div class="box-materi d-flex flex-column ps-3 gap-2">
-                            <div class="materi">
-                                <div class="materi-circle done"></div>
-                                <a class="materi-link" href="#">Materi 1</a>
-                            </div>
-                            <div class="materi">
-                                <div class="materi-circle current"></div>
-                                <a class="materi-link" href="#">Materi 2</a>
-                            </div>
-                            <div class="materi">
-                                <div class="materi-circle"></div>
-                                <a class="materi-link" href="#">Materi 3</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                        Pengenalan Figma
-                    </button>
-                </h2>
-                <div id="collapseTwo" class="accordion-collapse collapse">
-                    <div class="accordion-body">
-                        <div class="box-materi d-flex flex-column ps-3 gap-2">
-                            <div class="materi">
-                                <div class="materi-circle done"></div>
-                                <a class="materi-link" href="#">Materi 1</a>
-                            </div>
-                            <div class="materi">
-                                <div class="materi-circle current"></div>
-                                <a class="materi-link" href="#">Materi 2</a>
-                            </div>
-                            <div class="materi">
-                                <div class="materi-circle"></div>
-                                <a class="materi-link" href="#">Materi 3</a>
+            <?php
+                $modules = $sidebarData->modules; // Akses modul dari sidebarData
+                foreach ($modules as $module): // Iterasi melalui modul
+            ?>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button fw-medium" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#module-<?= $module->moduleID ?>" aria-expanded="true" aria-controls="module-<?= $module->moduleID ?>">
+                            <?= $module->moduleName ?>
+                        </button>
+                    </h2>
+                    <div id="module-<?= $module->moduleID ?>" class="accordion-collapse collapse show">
+                        <div class="accordion-body">
+                            <div class="box-materi d-flex flex-column ps-3 gap-2">
+                                <?php
+                                    if (!empty($module->materials)): // Periksa apakah ada materi
+                                        foreach ($module->materials as $material): // Iterasi melalui materi
+                                ?>
+                                <div class="materi">
+                                    <div class="materi-circle done"></div>
+                                    <a class="materi-link <?= $material->materialID == $activeMaterialID ? 'link-underline-primary' : '' ?>" 
+                                       href="<?= base_url('learning?courseID='.$sidebarData->courseID.'&materialID='.$material->materialID); ?>">
+                                       <?= $material->materialName ?>
+                                    </a>
+                                </div>
+                                <?php
+                                        endforeach; // Akhiri iterasi materi
+                                    else: // Jika tidak ada materi
+                                ?>
+                                <p class="text-muted">Tidak ada materi tersedia.</p>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                    <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                        Pendalaman Figma
-                    </button>
-                </h2>
-                <div id="collapseThree" class="accordion-collapse collapse">
-                    <div class="accordion-body">
-                        <div class="box-materi d-flex flex-column ps-3 gap-2">
-                            <div class="materi">
-                                <div class="materi-circle done"></div>
-                                <a class="materi-link" href="#">Materi 1</a>
-                            </div>
-                            <div class="materi">
-                                <div class="materi-circle current"></div>
-                                <a class="materi-link" href="#">Materi 2</a>
-                            </div>
-                            <div class="materi">
-                                <div class="materi-circle"></div>
-                                <a class="materi-link" href="#">Materi 3</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </aside>
