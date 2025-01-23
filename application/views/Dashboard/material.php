@@ -25,7 +25,7 @@
                     <th class="py-6 px-6 border-b">Id</th>
                     <th class="py-6 px-6 border-b">Nama Material</th>
                     <th class="py-6 px-6 border-b">Konten</th>
-                    <th class="py-6 px-6 border-b">Tags</th>
+                    <th class="py-6 px-6 border-b">Media</th>
                     <th class="py-6 px-6 border-b">Aksi</th>
                 </tr>
             </thead>
@@ -35,8 +35,8 @@
                         <tr class="hover:bg-blue-100">
                             <td class="py-6 px-6 border-b"><?= $material->materialID ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($material->materialName) ? html_escape($material->materialName) : 'N/A' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($material->mediaNames) ? html_escape($material->mediaNames) : 'N/A' ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($material->materialContent) ? html_escape($material->materialContent) : 'N/A' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($material->materialTags) ? html_escape($material->materialTags) : 'N/A' ?></td>
                             <td class="py-6 px-6 border-b">
                                 <button class="text-green-600 hover:underline open-modal" data-material-id="<?= $material->materialID ?>" data-material-name="<?= html_escape($material->materialName) ?>" data-material-content="<?= html_escape($material->materialContent) ?>" data-material-tags="<?= html_escape($material->materialTags) ?>">Edit</button> |
                                 <button class="text-red-600 hover:underline openModalButton" data-material-id="<?= $material->materialID ?>">Hapus</button>
@@ -57,30 +57,57 @@
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg w-1/3">
         <h2 class="text-xl font-bold mb-4">Tambah Material</h2>
-        <form action="<?= site_url('dashboard/material/store') ?>" method="post">
+        <form action="<?= site_url('dashboard/material/store') ?>" method="post" enctype="multipart/form-data">
+            <!-- CSRF Token -->
             <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+
+            <!-- Nama Material -->
             <div class="mb-4">
                 <label for="materialName" class="block text-sm font-medium text-gray-700">Nama Material</label>
-                <input type="text" id="materialName" name="materialName" class="mt-1 px-4 py-2 border rounded w-full" required>
+                <input
+                    type="text"
+                    id="materialName"
+                    name="materialName"
+                    class="mt-1 px-4 py-2 border rounded w-full"
+                    required>
             </div>
 
+            <!-- Konten Material -->
             <div class="mb-4">
                 <label for="materialContent" class="block text-sm font-medium text-gray-700">Konten Material</label>
-                <textarea id="materialContent" name="materialContent" class="mt-1 px-4 py-2 border rounded w-full" rows="4"></textarea>
+                <textarea
+                    id="materialContent"
+                    name="materialContent"
+                    class="mt-1 px-4 py-2 border rounded w-full"
+                    rows="4"></textarea>
             </div>
 
+            <!-- Media -->
             <div class="mb-4">
-                <label for="materialTags" class="block text-sm font-medium text-gray-700">Tags Material</label>
-                <input type="text" id="materialTags" name="materialTags" class="mt-1 px-4 py-2 border rounded w-full">
-                <small class="text-gray-500">Pisahkan tag dengan koma (misal: tag1, tag2, tag3).</small>
+                <label for="materialMedia" class="block text-sm font-medium text-gray-700">Upload Media</label>
+                <input
+                    type="file"
+                    id="materialMedia"
+                    name="materialMedia"
+                    class="mt-1 px-4 py-2 border rounded w-full"
+                    required>
+                <small class="text-gray-500">File yang diizinkan: jpg, png, mp4, pdf (max 2MB).</small>
             </div>
+
+            <!-- Actions -->
             <div class="flex justify-end">
-                <button type="button" id="closeAddModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Save</button>
+                <button
+                    type="button"
+                    id="closeAddModal"
+                    class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
+                <button
+                    type="submit"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Save</button>
             </div>
         </form>
     </div>
 </div>
+
 
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">

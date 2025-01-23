@@ -19,7 +19,7 @@ class Material extends CI_Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $response = curl_exec($ch);
         curl_close($ch);
-        $materials = json_decode($response);
+        $materials = json_decode($response)->data;
 
         $datas = array(
             'title' => 'Materials',
@@ -40,49 +40,57 @@ class Material extends CI_Controller
 
     public function store()
     {
-
-
-        $this->form_validation->set_rules('materialName', 'Nama Material ', 'required|trim|max_length[100]');
-        $this->form_validation->set_rules('materialContent', 'Konten', 'required');
-        $this->form_validation->set_rules('materialTags', 'Tag Material', 'required');
-
-        $error_messages = array(
-            'required' => '{field} harus diisi.',
-            'max_length' => '{field} tidak boleh lebih dari {param} karakter.',
-        );
-
-        foreach ($error_messages as $error => $message) {
-            $this->form_validation->set_message($error, $message);
-        }
+        // Validasi input
+        $this->form_validation->set_rules('materialName', 'Nama Material', 'required|trim');
+        $this->form_validation->set_rules('materialContent', 'Konten Material', 'trim');
 
         if ($this->form_validation->run() == FALSE) {
             $this->session->set_flashdata('error', validation_errors());
             redirect('dashboard/material');
-        } else {
-            $data = array(
-                'materialName' => $this->input->post('materialName'),
-                'materialContent' => $this->input->post('materialContent'),
-                'materialTags' => $this->input->post('materialTags'),
-            );
+        }
 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, "http://localhost/learnify/api/Materials/");
-            curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            $response = curl_exec($ch);
-            curl_close($ch);
-            $result = json_decode($response);
+        // Data dasar material
+        $data = [
+            'materialName' => $this->input->post('materialName', TRUE),
+            'materialContent' => $this->input->post('materialContent', TRUE),
+        ];
 
-            if ($result->status) {
-                $this->session->set_flashdata('success', 'Material berhasil ditambahkan');
-                redirect('dashboard/material');
+        // Handle upload file
+        if (!empty($_FILES['materialMedia']['name'])) {
+            $this->load->library('upload');
+            $config['upload_path'] = FCPATH . 'uploads/images/';
+            $config['allowed_types'] = 'jpg|jpeg|png|mp4|pdf';
+            $config['max_size'] = 2048; // 2MB
+            $config['file_name'] = uniqid();
+
+            $this->upload->initialize($config);
+
+            if ($this->upload->do_upload('materialMedia')) {
+                $uploadData = $this->upload->data();
+
+                // Simpan data media ke tabel media
+                $mediaData = [
+                    'file_name' => $uploadData['file_name'],
+                    'file_path' => 'uploads/media/' . $uploadData['file_name'],
+                    'uploaded_at' => date('Y-m-d H:i:s'),
+                ];
+                $this->db->insert('media', $mediaData);
+                $mediaID = $this->db->insert_id(); // Dapatkan ID media yang baru disimpan
+
+                // Tambahkan ID media ke data material
+                $data['material_has_media'] = $mediaID;
             } else {
-                $this->session->set_flashdata('error', $result->message);
+                $this->session->set_flashdata('error', $this->upload->display_errors());
                 redirect('dashboard/material');
             }
         }
+
+        // Simpan data material
+        $this->db->insert('materials', $data);
+        $this->session->set_flashdata('success', 'Material berhasil ditambahkan!');
+        redirect('dashboard/material');
     }
+
 
     public function update()
     {

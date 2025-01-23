@@ -32,10 +32,10 @@
                     <th class="py-6 px-6 border-b">No</th>
                     <th class="py-6 px-6 border-b">Nama Course</th>
                     <th class="py-6 px-6 border-b">Thumbnail</th>
-                    <th class="py-6 px-6 border-b">Kategori</th>
                     <th class="py-6 px-6 border-b">Deskripsi</th>
                     <th class="py-6 px-6 border-b">Harga</th>
                     <th class="py-6 px-6 border-b">Tags</th>
+                    <th class="py-6 px-6 border-b">Module</th>
                     <th class="py-6 px-6 border-b">Aksi</th>
                 </tr>
             </thead>
@@ -46,12 +46,12 @@
                             <td class="py-6 px-6 border-b"><?= $index + 1 ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->courseName) ? html_escape($course->courseName) : 'N/A' ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->courseThumbnail) ? html_escape($course->courseThumbnail) : '-' ?></td>
-                            <td class="py-6 px-6 border-b"><?= isset($course->courseCategory) ? html_escape($course->courseCategory) : 'N/A' ?></td>
                             <td class="py-6 px-6 border-b"><?= !empty($course->courseDescription) ? html_escape($course->courseDescription) : 'Deskripsi tidak tersedia' ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->coursePrice) ? 'Rp. ' . number_format($course->coursePrice, 0, ',', '.') : 'Gratis' ?></td>
                             <td class="py-6 px-6 border-b"><?= isset($course->courseTags) ? html_escape($course->courseTags) : 'Tidak ada tag' ?></td>
+                            <td class="py-6 px-6 border-b"><?= isset($course->moduleNames) ? html_escape($course->moduleNames) : 'Tidak ada Module' ?></td>
                             <td class="py-6 px-6 border-b">
-                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course->courseID ?>" data-course-name="<?= html_escape($course->courseName) ?>" data-course-thumbnail="<?= html_escape($course->courseThumbnail) ?>" data-course-category="<?= html_escape($course->courseCategory) ?>" data-course-description="<?= html_escape($course->courseDescription) ?>" data-course-price="<?= $course->coursePrice ?>" data-course-tags="<?= $course->courseTags ?>">Edit</button> |
+                                <button class="text-green-600 hover:underline open-modal" data-course-id="<?= $course->courseID ?>" data-course-name="<?= html_escape($course->courseName) ?>" data-course-thumbnail="<?= html_escape($course->courseThumbnail) ?>" data-course-description="<?= html_escape($course->courseDescription) ?>" data-course-price="<?= $course->coursePrice ?>" data-course-tags="<?= $course->courseTags ?>">Edit</button> |
                                 <button class="text-red-600 hover:underline openModalButton" data-course-id="<?= $course->courseID ?>">Hapus</button>
                             </td>
                         </tr>
@@ -103,13 +103,21 @@
                 <textarea id="addCourseDescription" name="courseDescription" rows="3" class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-200"></textarea>
             </div>
 
-            <!-- Modules -->
             <div class="col-span-2">
-                <label for="addCourseModules" class="block font-semibold text-gray-700 mb-1">Pilih Modules</label>
-                <select id="addCourseModules" name="modules[]" multiple class="w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                    <option value="" disabled>Loading Modules...</option>
-                </select>
-                <p class="text-xs text-gray-500 mt-1">Tekan Ctrl / Cmd untuk memilih lebih dari satu module.</p>
+                <label class="block font-semibold text-gray-700 mb-1">Pilih Modules</label>
+                <div class="flex flex-wrap space-y-2">
+                    <?php if (!empty($modules)): ?>
+                        <?php foreach ($modules as $key => $module): ?>
+                            <div class="flex items-center mr-4">
+                                <input type="checkbox" id="module_<?= $module->moduleID ?>" name="modules[]" value="<?= $module->moduleID ?>" class="mr-2">
+                                <label for="module_<?= $module->moduleID ?>" class="text-gray-700"><?= $module->moduleName ?></label>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p class="text-gray-500">No Modules Available</p>
+                    <?php endif; ?>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Centang modul yang ingin dipilih.</p>
             </div>
 
             <!-- Actions -->
@@ -120,8 +128,6 @@
         </form>
     </div>
 </div>
-
-
 
 
 <!-- Edit Modal -->
@@ -202,46 +208,46 @@
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // URL API Module
-        const apiUrl = 'http://localhost/learnify/api/Modules/';
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     // URL API Module
+    //     const apiUrl = 'http://localhost/learnify/api/Modules/';
 
-        // Elemen select untuk modules
-        const moduleSelect = document.getElementById('addCourseModules');
+    //     // Elemen select untuk modules
+    //     const moduleSelect = document.getElementById('addCourseModules');
 
-        // Function to fetch modules and populate the select element
-        function fetchModules() {
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Gagal mengambil data modules');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.status) {
-                        // Kosongkan opsi sebelumnya
-                        moduleSelect.innerHTML = '';
+    //     // Function to fetch modules and populate the select element
+    //     function fetchModules() {
+    //         fetch(apiUrl)
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                     throw new Error('Gagal mengambil data modules');
+    //                 }
+    //                 return response.json();
+    //             })
+    //             .then(data => {
+    //                 if (data.status) {
+    //                     // Kosongkan opsi sebelumnya
+    //                     moduleSelect.innerHTML = '';
 
-                        // Tambahkan opsi ke dalam select
-                        data.data.forEach(module => {
-                            const option = document.createElement('option');
-                            option.value = module.moduleID;
-                            option.textContent = module.moduleName;
-                            moduleSelect.appendChild(option);
-                        });
-                    } else {
-                        moduleSelect.innerHTML = '<option disabled>Modules tidak tersedia</option>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    moduleSelect.innerHTML = '<option disabled>Gagal memuat modules</option>';
-                });
-        }
+    //                     // Tambahkan opsi ke dalam select
+    //                     data.data.forEach(module => {
+    //                         const option = document.createElement('option');
+    //                         option.value = module.moduleID;
+    //                         option.textContent = module.moduleName;
+    //                         moduleSelect.appendChild(option);
+    //                     });
+    //                 } else {
+    //                     moduleSelect.innerHTML = '<option disabled>Modules tidak tersedia</option>';
+    //                 }
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error:', error);
+    //                 moduleSelect.innerHTML = '<option disabled>Gagal memuat modules</option>';
+    //             });
+    //     }
 
-        fetchModules();
-    });
+    //     fetchModules();
+    // });
 
 
 
@@ -270,7 +276,6 @@
             modalInputs.courseID.val(button.data('course-id'));
             modalInputs.courseName.val(button.data('course-name'));
             modalInputs.courseThumbnail.val(button.data('course-thumbnail'));
-            modalInputs.classCategory.val(button.data('course-category'));
             modalInputs.courseDescription.val(button.data('course-description'));
             modalInputs.coursePrice.val(button.data('course-price'));
             modalInputs.courseTags.val(button.data('course-tags'));

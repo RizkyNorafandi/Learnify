@@ -5,12 +5,12 @@
       <button class="btn-sidebar">
         <i class="fa-solid fa-angle-left"></i>
       </button>
-      <button class="btn-outline-secondary">Back To Course</button>
+      <a href="<?= base_url('course') ?>" class="btn btn-outline-secondary">Back To Course</a>
     </div>
-    <button class="btn-marks-complete complete">Marks Complete</button>
+    <button class="btn-marks-complete complete" onclick="markComplete()">Marks Complete</button>
     <div>
-      <button class="btn btn-secondary">Previous</button>
-      <button class="btn btn-secondary">Next</button>
+    <button class="btn btn-secondary" onclick="goToPrevious()">Previous</button>
+    <button class="btn btn-secondary" onclick="goToNext()">Next</button>
     </div>
   </div>
 </section>

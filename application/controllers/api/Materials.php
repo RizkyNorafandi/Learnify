@@ -17,6 +17,36 @@ class Materials extends RestController
 
     public function index_get()
     {
+        $id = $this->get('materialID');
+
+        $check_data = $this->db->get_where('material', ['materialID' => $id])->row_array();
+
+        if ($id) {
+            if ($check_data) {
+                $data = $this->materialModel->getMaterialWithMedia('material', ['materialID' => $id])->row_array();
+
+                $this->response([
+                    'status' => true,
+                    'data' => $data
+                ], RestController::HTTP_OK);
+            } else {
+                $this->response([
+                    'status' => false,
+                    'message' => 'Data Tidak Ditemukan'
+                ], 404);
+            }
+        } else {
+            $data = $this->materialModel->getMaterialWithMedia()->result();
+            $this->response([
+                'status' => true,
+                'data' => $data
+            ], RestController::HTTP_OK);
+        }
+    }
+
+
+    public function material_get()
+    {
 
         $id = $this->get('materialID');
 

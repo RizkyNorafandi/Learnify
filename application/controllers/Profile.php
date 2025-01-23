@@ -12,6 +12,10 @@ class Profile extends CI_Controller {
 
     public function index()
     {
+        $datas = array(
+            'title' => 'Profile'
+        );
+
         $templates = array(
             'head' => 'Templates/User/head',
             'navbar' => 'Templates/User/navbar',
@@ -20,6 +24,7 @@ class Profile extends CI_Controller {
             'script' => 'Templates/User/script',
         );
 
+        $this->load->vars($datas);
         $this->load->view('masterUser', $templates);
     }
 }

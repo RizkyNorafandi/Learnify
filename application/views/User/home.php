@@ -124,7 +124,7 @@
 <!-- FAQ End-->
 
 <!-- Kontak -->
-<section class="contact-section">
+<section class="contact-section" id="contact">
     <div class="contact-container">
         <div class="contact-form">
             <h2 class="contact-title">KONTAK KAMI</h2>

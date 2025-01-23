@@ -1,8 +1,8 @@
 <?php
 
-use chriskacerguis\RestServer\RestController;
-
 defined('BASEPATH') or exit('No direct script access allowed');
+
+use chriskacerguis\RestServer\RestController;
 
 class Courses extends RestController
 {
@@ -11,28 +11,19 @@ class Courses extends RestController
     {
         parent::__construct();
 
-        // if ($this->input->method() == 'post' || $this->input->method() == 'put' || $this->input->method() == 'delete') {
-        //     $csrf_token = $this->input->server('X-CSRF-TOKEN');
-        //     $csrf_cookie = $this->input->cookie('csrf_cookie_name');
-        //     if ($csrf_token !== $csrf_cookie) {
-        //         $this->response(['status' => FALSE, 'message' => 'Invalid CSRF token'], RestController::HTTP_FORBIDDEN);
-        //         return;
-        //     }
-        // }
-
         $this->load->model('courseModel');
     }
 
     public function index_get()
     {
 
-        $id = $this->get('id');
+        $courseID = $this->get('id');
 
-        $check_data = $this->db->get_where('course', ['courseID' => $id])->row_array();
+        $check_data = $this->db->get_where('course', ['courseID' => $courseID])->row_array();
 
-        if ($id) {
+        if ($courseID) {
             if ($check_data) {
-                $data = $this->db->get_where('course', ['courseID' => $id])->result();
+                $data = $this->courseModel->getCourses($courseID)->result();
 
                 $this->response([
                     'status' => true,
@@ -45,7 +36,7 @@ class Courses extends RestController
                 ], 404);
             }
         } else {
-            $data = $this->db->get('course')->result();
+            $data = $this->courseModel->getCourses()->result();
             $this->response([
                 'status' => true,
                 'data' => $data
@@ -54,42 +45,43 @@ class Courses extends RestController
     }
 
     // POST: Tambah course baru
+
     public function index_post()
     {
-        // Get the JSON input
+        header("Access-Control-Allow-Origin: *");
+        header("Access-Control-Allow-Methods: POST, OPTIONS");
+        header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
+        log_message('info', 'index_post() called');
 
-        // Validate input
+        // Validasi input
         $this->form_validation->set_rules('courseName', 'Nama Course', 'required|trim|max_length[100]');
-        $this->form_validation->set_rules('courseCategory', 'Kategori', 'required|trim|max_length[50]');
         $this->form_validation->set_rules('courseDescription', 'Deskripsi', 'required|trim|max_length[500]');
         $this->form_validation->set_rules('coursePrice', 'Harga', 'required|numeric|greater_than_equal_to[0]');
         $this->form_validation->set_rules('courseTags', 'Tags', 'required|trim|max_length[100]');
+        $this->form_validation->set_rules('modules[]', 'Modules', 'required'); // Array validation
 
         if ($this->form_validation->run() == FALSE) {
-            $response = [
+            return $this->response([
                 'status' => false,
                 'message' => validation_errors()
-            ];
-            return $this->response($response, RestController::HTTP_BAD_REQUEST);
+            ], RestController::HTTP_BAD_REQUEST);
         }
 
-        // Prepare data for insertion
+        // Persiapkan data course
         $data = [
             'courseName' => htmlspecialchars($this->post('courseName')),
-            'courseCategory' => htmlspecialchars($this->post('courseCategory')),
             'courseDescription' => htmlspecialchars($this->post('courseDescription')),
             'coursePrice' => htmlspecialchars($this->post('coursePrice')),
             'courseTags' => htmlspecialchars($this->post('courseTags')),
-
         ];
 
-        // Handle file upload
+        // Handle file upload jika ada
         if (!empty($_FILES['courseThumbnail']['name'])) {
             $this->load->library('upload');
             $config['upload_path'] = FCPATH . 'assets/images/';
             $config['allowed_types'] = 'jpg|jpeg|png';
-            $config['max_size'] = 2048; // 2MB
+            $config['max_size'] = 2048;
             $config['file_name'] = uniqid();
 
             $this->upload->initialize($config);
@@ -98,28 +90,139 @@ class Courses extends RestController
                 $uploadData = $this->upload->data();
                 $data['courseThumbnail'] = $uploadData['file_name'];
             } else {
-                $this->session->set_flashdata('error', $this->upload->display_errors());
+                return $this->response([
+                    'status' => false,
+                    'message' => $this->upload->display_errors()
+                ], RestController::HTTP_BAD_REQUEST);
             }
         }
 
-        // Log the data being inserted
-        log_message('debug', 'Data to be inserted: ' . json_encode($data));
+        // Mulai transaksi
+        $this->db->trans_start();
 
-        // Insert data into the database
-        if ($this->courseModel->insertCourse($data)) {
-            log_message('debug', 'Course successfully added: ' . json_encode($data));
-            $this->response([
-                'status' => true,
-                'message' => 'Course berhasil ditambahkan!'
-            ], RestController::HTTP_CREATED);
-        } else {
-            log_message('error', 'Failed to add course: ' . json_encode($data));
-            $this->response([
+        // Insert course
+        $courseId = $this->courseModel->insertCourse($data);
+
+        if (!$courseId) {
+            $this->db->trans_rollback();
+            return $this->response([
                 'status' => false,
-                'message' => 'Gagal menambahkan course. Silakan coba lagi.'
+                'message' => 'Gagal menyimpan course.'
             ], RestController::HTTP_INTERNAL_ERROR);
         }
+
+        // Insert modules
+        $modules = $this->post('modules');
+        if (!empty($modules)) { // Pastikan modules tidak kosong
+            $this->courseModel->insertCourseModules($courseId, $modules);
+        }
+
+        // Selesaikan transaksi
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            return $this->response([
+                'status' => false,
+                'message' => 'Gagal menyimpan course dan modules.'
+            ], RestController::HTTP_INTERNAL_ERROR);
+        }
+
+        return $this->response([
+            'status' => true,
+            'message' => 'Course dan modules berhasil disimpan.'
+        ], RestController::HTTP_CREATED);
     }
+
+
+
+    // public function index_post()
+    // {
+    //     // Validasi input
+    //     $this->form_validation->set_rules('courseName', 'Nama Course', 'required|trim|max_length[100]');
+    //     $this->form_validation->set_rules('courseCategory', 'Kategori', 'required|trim|max_length[50]');
+    //     $this->form_validation->set_rules('courseDescription', 'Deskripsi', 'required|trim|max_length[500]');
+    //     $this->form_validation->set_rules('coursePrice', 'Harga', 'required|numeric|greater_than_equal_to[0]');
+    //     $this->form_validation->set_rules('courseTags', 'Tags', 'required|trim|max_length[100]');
+    //     $this->form_validation->set_rules('modules[]', 'Modules', 'required'); // Array validation
+
+    //     if ($this->form_validation->run() == FALSE) {
+    //         $response = [
+    //             'status' => false,
+    //             'message' => validation_errors()
+    //         ];
+    //         return $this->response($response, RestController::HTTP_BAD_REQUEST);
+    //     }
+
+    //     // Persiapkan data course
+    //     $data = [
+    //         'courseName' => htmlspecialchars($this->post('courseName')),
+    //         'courseCategory' => htmlspecialchars($this->post('courseCategory')),
+    //         'courseDescription' => htmlspecialchars($this->post('courseDescription')),
+    //         'coursePrice' => htmlspecialchars($this->post('coursePrice')),
+    //         'courseTags' => htmlspecialchars($this->post('courseTags')),
+    //     ];
+
+    //     // Handle file upload jika ada
+    //     if (!empty($_FILES['courseThumbnail']['name'])) {
+    //         $this->load->library('upload');
+    //         $config['upload_path'] = FCPATH . 'assets/images/';
+    //         $config['allowed_types'] = 'jpg|jpeg|png';
+    //         $config['max_size'] = 2048; // Maksimal 2MB
+    //         $config['file_name'] = uniqid();
+
+    //         $this->upload->initialize($config);
+
+    //         if ($this->upload->do_upload('courseThumbnail')) {
+    //             $uploadData = $this->upload->data();
+    //             $data['courseThumbnail'] = $uploadData['file_name'];
+    //         } else {
+    //             return $this->response([
+    //                 'status' => false,
+    //                 'message' => $this->upload->display_errors()
+    //             ], RestController::HTTP_BAD_REQUEST);
+    //         }
+    //     }
+
+    //     // Mulai transaksi untuk menyimpan data
+    //     $this->db->trans_start();
+
+    //     // Insert course ke database
+    //     $courseId = $this->courseModel->insertCourse($data);
+
+    //     if ($courseId) {
+    //         // Tambahkan modules jika course berhasil disimpan
+    //         $modules = $this->post('modules'); // Expecting an array of module IDs
+    //         foreach ($modules as $moduleId) {
+    //             $this->db->insert('course_has_module', [
+    //                 'course_id' => $courseId,
+    //                 'module_id' => $moduleId,
+    //             ]);
+    //         }
+
+    //         $this->db->trans_complete();
+
+    //         // Cek status transaksi
+    //         if ($this->db->trans_status() === FALSE) {
+    //             return $this->response([
+    //                 'status' => false,
+    //                 'message' => 'Gagal menyimpan data course atau modules.'
+    //             ], RestController::HTTP_INTERNAL_ERROR);
+    //         }
+
+    //         // Berhasil
+    //         return $this->response([
+    //             'status' => true,
+    //             'message' => 'Course dan modules berhasil ditambahkan!'
+    //         ], RestController::HTTP_CREATED);
+    //     } else {
+    //         $this->db->trans_rollback(); // Rollback jika terjadi kesalahan
+    //         return $this->response([
+    //             'status' => false,
+    //             'message' => 'Gagal menambahkan course. Silakan coba lagi.'
+    //         ], RestController::HTTP_INTERNAL_ERROR);
+    //     }
+    // }
+
 
     // PUT: Update course
     public function index_put($id)
@@ -154,6 +257,79 @@ class Courses extends RestController
             $this->response([
                 'status' => false,
                 'message' => 'Gagal memperbarui course. Silakan coba lagi.'
+            ], RestController::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    public function index_delete()
+    {
+        $courseID = $this->delete('id');
+
+        if (!$courseID) {
+            $this->response([
+                'status' => false,
+                'message' => 'ID course tidak ditemukan.'
+            ], RestController::HTTP_BAD_REQUEST);
+            return;
+        }
+
+        if ($this->courseModel->deleteCourse($courseID)) {
+            $this->response([
+                'status' => true,
+                'message' => 'Course berhasil dihapus!'
+            ], RestController::HTTP_OK);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Gagal menghapus course. Silakan coba lagi.'
+            ], RestController::HTTP_INTERNAL_ERROR);
+        }
+    }
+
+    public function addModule_post()
+    {
+        $data = [
+            'courseID' => $this->post('courseID'),
+            'moduleIDs' => $this->post('moduleIDs'),
+        ];
+
+        $input = json_decode(trim(file_get_contents('php://input')), true);
+
+        $this->form_validation->set_data($input);
+
+        $this->form_validation->set_rules('courseID', 'ID Course', 'required|trim|numeric');
+        // $this->form_validation->set_rules('moduleIDs', 'Judul Modul', 'required|trim|max_length[100]');
+
+        // Pesan kesalahan dalam bentuk array
+        $error_messages = array(
+            'required' => '{field} harus diisi.',
+            'max_length' => '{field} tidak boleh lebih dari {param} karakter.',
+            'numeric' => '{field} harus berupa angka.',
+        );
+
+        // Mengatur pesan kesalahan menggunakan array
+        foreach ($error_messages as $rule => $message) {
+            $this->form_validation->set_message($rule, $message);
+        }
+
+        // Validasi data di model
+        if ($this->form_validation->run() == FALSE) {
+            $this->response([
+                'status' => false,
+                'message' => validation_errors(),
+            ], RestController::HTTP_BAD_REQUEST);
+            return;
+        }
+        // Tambahkan data ke database
+        if ($this->courseModel->insertModule($data)) {
+            $this->response([
+                'status' => true,
+                'message' => 'Modul berhasil ditambahkan!'
+            ], RestController::HTTP_CREATED);
+        } else {
+            $this->response([
+                'status' => false,
+                'message' => 'Gagal menambahkan modul. Silakan coba lagi.'
             ], RestController::HTTP_INTERNAL_ERROR);
         }
     }
