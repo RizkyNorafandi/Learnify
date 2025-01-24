@@ -217,6 +217,33 @@ class Module extends CI_Controller
         }
     }
 
+    public function delete()
+    {
+        $moduleID = $this->input->post('moduleID', TRUE);
+
+        // Mulai transaksi database
+        $this->db->trans_start();
+
+        // Hapus relasi di module_has_material
+        $this->db->where('moduleID', $moduleID);
+        $this->db->delete('module_has_material');
+
+        // Hapus module dari tabel module
+        $this->db->where('<moduleID></moduleID>', $moduleID);
+        $this->db->delete('module');
+
+        // Akhiri transaksi database
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->session->set_flashdata('error', 'Gagal menghapus module.');
+        } else {
+            $this->session->set_flashdata('success', 'Module berhasil dihapus!');
+        }
+
+        redirect('dashboard/module');
+    }
+
 
 
 

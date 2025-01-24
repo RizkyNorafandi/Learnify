@@ -85,7 +85,6 @@ class moduleModel extends CI_Model
             $this->db->join('material ma', 'mm.materialID = ma.materialID', 'left');
             $this->db->where('mo.moduleID', $moduleID);
             $query = $this->db->get();
-            return $query->row_array();
         } else {
             $this->db->select(
                 '
@@ -98,8 +97,46 @@ class moduleModel extends CI_Model
             $this->db->join('material ma', 'mm.materialID = ma.materialID', 'left');
             $this->db->group_by('mo.moduleID');
             $query = $this->db->get();
-            return $query->result_array();
         }
+        return $query;
+    }
+
+    public function updateModule($moduleID, $moduleDatas, $materialIDs = NULL)
+    {
+        $this->db->where('moduleID', $moduleID); // Tentukan modul mana yang ingin diupdate
+        $this->db->update('module', $moduleDatas); // Update data pada tabel 'module'
+
+        // Jika ada material yang diupdate
+        if ($materialIDs) {
+            // Hapus material lama yang terhubung dengan moduleID
+            $this->db->delete('module_has_material', array('moduleID' => $moduleID));
+
+            // Siapkan data baru untuk relasi module dan material
+            $materials = array();
+            foreach ($materialIDs as $materialID) {
+                $materials[] = array(
+                    'moduleID' => $moduleID,
+                    'materialID' => (int) $materialID
+                );
+            }
+
+            // Insert batch material baru
+            $this->db->insert_batch('module_has_material', $materials);
+        }
+
+        return true;
+    }
+
+    public function deleteModule($moduleID)
+    {
+
+        // Hapus relasi material yang terkait dengan module
+        $this->db->where('moduleID', $moduleID);
+        $this->db->delete('module_has_material'); // Menghapus relasi material dengan module
+
+        // Hapus data modul itu sendiri
+        $this->db->where('moduleID', $moduleID);
+        return $this->db->delete('module'); // Menghapus data modul
     }
 
     public function get_module_count()
@@ -113,11 +150,15 @@ class moduleModel extends CI_Model
         return $this->db->affected_rows();
     }
 
-    public function updateModule($moduleID, $data)
+    public function update_Module($moduleID, $data)
     {
         $this->db->where('moduleID', $moduleID);
         return $this->db->update('module', $data);
     }
 }
+
+
+    
+
 
 /* End of file moduleModel.php */

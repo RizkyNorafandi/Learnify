@@ -217,7 +217,7 @@ class Course extends CI_Controller
             $courseID = $this->db->insert_id(); // Dapatkan ID course yang baru ditambahkan
 
             // Simpan data module jika ada
-            $modules = $this->input->post('modules', TRUE);
+            $modules = $this->input->post('module', TRUE);
             if (!empty($modules)) {
                 $moduleData = [];
                 foreach ($modules as $moduleID) {

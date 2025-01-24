@@ -19,10 +19,7 @@
         </div>
     <?php endif; ?>
 
-    <!-- Add Button -->
-    <div class="mb-6">
-        <button id="openAddModal" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Tambah User</button>
-    </div>
+    
     <div class="overflow-x-auto">
         <div class="ml-auto">
             <table id="userTable" class="w-full text-sm text-left rtl:text-right bg-white border border-gray-300">
@@ -33,7 +30,6 @@
                         <th class="py-6 px-6 border-b">Email</th>
                         <th class="py-6 px-6 border-b">No. Telepon</th>
                         <th class="py-6 px-6 border-b">Alamat</th>
-                        <th class="py-6 px-6 border-b">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -45,9 +41,7 @@
                                 <td class="py-6 px-6 border-b"><?= isset($user->userEmail) ? html_escape($user->userEmail) : 'N/A' ?></td>
                                 <td class="py-6 px-6 border-b"><?= !empty($user->userPhone) ? html_escape($user->userPhone) : 'Deskripsi tidak tersedia' ?></td>
                                 <td class="py-6 px-6 border-b"><?= isset($user->userAddress) ? html_escape($user->userAddress) : '-' ?></td>
-                                <td class="py-6 px-6 border-b">
-                                    <a href="<?= site_url('user/edit/' . $user->userID) ?>" class="text-green-600 hover:underline">Edit</a> |
-                                    <a href="<?= site_url('user/delete/' . $user->userID) ?>" class="text-red-600 hover:underline">Hapus</a>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>

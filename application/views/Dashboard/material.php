@@ -57,7 +57,7 @@
 <div id="addModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg w-1/3">
         <h2 class="text-xl font-bold mb-4">Tambah Material</h2>
-        <form action="<?= site_url('dashboard/material/store') ?>" method="post" enctype="multipart/form-data">
+        <form action="<?= site_url('dashboard/material/store') ?>" method="post">
             <!-- CSRF Token -->
             <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
 
@@ -82,16 +82,28 @@
                     rows="4"></textarea>
             </div>
 
-            <!-- Media -->
+            <!-- Tags Material -->
             <div class="mb-4">
-                <label for="materialMedia" class="block text-sm font-medium text-gray-700">Upload Media</label>
+                <label for="materialTags" class="block text-sm font-medium text-gray-700">Tags Material</label>
                 <input
-                    type="file"
-                    id="materialMedia"
-                    name="materialMedia"
+                    type="text"
+                    id="materialTags"
+                    name="materialTags"
+                    class="mt-1 px-4 py-2 border rounded w-full">
+                <small class="text-gray-500">Pisahkan tag dengan koma (misal: tag1, tag2, tag3).</small>
+            </div>
+
+            <!-- URL Media -->
+            <div class="mb-4">
+                <label for="materialMediaUrl" class="block text-sm font-medium text-gray-700">URL Media</label>
+                <input
+                    type="url"
+                    id="materialMediaUrl"
+                    name="materialMediaUrl"
                     class="mt-1 px-4 py-2 border rounded w-full"
+                    placeholder="https://www.youtube.com/embed/"
                     required>
-                <small class="text-gray-500">File yang diizinkan: jpg, png, mp4, pdf (max 2MB).</small>
+                <small class="text-gray-500">Masukkan URL media, seperti video atau gambar (misal: https://www.youtube.com/embed/videoId).</small>
             </div>
 
             <!-- Actions -->
@@ -109,6 +121,7 @@
 </div>
 
 
+
 <!-- Edit Modal -->
 <div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg w-1/3">
@@ -116,19 +129,29 @@
         <form action="<?= site_url('dashboard/material/update') ?>" method="post">
             <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
             <input type="hidden" name="materialID" id="modal-materialID">
+
             <div class="mb-4">
                 <label for="materialName" class="block text-sm font-medium text-gray-700">Nama Material</label>
                 <input type="text" id="modal-materialName" name="materialName" class="mt-1 px-4 py-2 border rounded w-full" required>
             </div>
+
             <div class="mb-4">
                 <label for="materialContent" class="block text-sm font-medium text-gray-700">Konten Material</label>
                 <textarea id="modal-materialContent" name="materialContent" class="mt-1 px-4 py-2 border rounded w-full" rows="4"></textarea>
             </div>
+
             <div class="mb-4">
                 <label for="materialTags" class="block text-sm font-medium text-gray-700">Tags Material</label>
                 <input type="text" id="modal-materialTags" name="materialTags" class="mt-1 px-4 py-2 border rounded w-full">
                 <small class="text-gray-500">Pisahkan tag dengan koma (misal: tag1, tag2, tag3).</small>
             </div>
+
+            <div class="mb-4">
+                <label for="materialMediaUrl" class="block text-sm font-medium text-gray-700">URL Media</label>
+                <input type="url" id="modal-materialMediaUrl" name="materialMediaUrl" class="mt-1 px-4 py-2 border rounded w-full" placeholder="https://example.com/media.mp4" required>
+                <small class="text-gray-500">Masukkan URL media, seperti video atau gambar (misal: https://video.com/sample.mp4).</small>
+            </div>
+
             <div class="flex justify-end">
                 <button type="button" id="closeEditModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Save</button>
@@ -142,8 +165,8 @@
     <div class="bg-white p-6 rounded-lg w-1/3">
         <h2 class="text-xl font-bold mb-4">Delete Material</h2>
         <p class="mb-6 text-gray-600">Are you sure you want to delete this material? This action cannot be undone.</p>
-        <form action="<?= site_url('material/delete') ?>" method="post">
-            <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
+        <form action="<?= site_url('dashboard/Material/delete') ?>" method="post">
+            <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
             <input type="hidden" name="materialID" id="modal-delete-materialID">
             <div class="flex justify-center">
                 <button type="button" id="closeDeleteModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>

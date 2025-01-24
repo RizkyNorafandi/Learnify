@@ -1,29 +1,59 @@
 <?php
 
-use chriskacerguis\RestServer\RestController;
-
 defined('BASEPATH') or exit('No direct script access allowed');
+
+use chriskacerguis\RestServer\RestController;
 
 class Materials extends RestController
 {
 
-
     public function __construct()
     {
         parent::__construct();
-        //Do your magic here
         $this->load->model('materialModel');
     }
 
+    // public function index_get()
+    // {
+    //     $id = $this->get('materialID');
+
+    //     $check_data = $this->db->get_where('material', ['materialID' => $id])->row_array();
+
+    //     if ($id) {
+    //         if ($check_data) {
+    //             $data = $this->materialModel->getMaterialWithMedia($id)->row_array();
+
+    //             $this->response([
+    //                 'status' => true,
+    //                 'data' => $data
+    //             ], RestController::HTTP_OK);
+    //         } else {
+    //             $this->response([
+    //                 'status' => false,
+    //                 'message' => 'Data Tidak Ditemukan'
+    //             ], 404);
+    //         }
+    //     } else {
+    //         $data = $this->materialModel->getMaterialWithMedia()->result();
+    //         $this->response([
+    //             'status' => true,
+    //             'data' => $data
+    //         ], RestController::HTTP_OK);
+    //     }
+    // }
+
+
     public function index_get()
     {
-        $id = $this->get('materialID');
-
-        $check_data = $this->db->get_where('material', ['materialID' => $id])->row_array();
+        $id = $this->get('id'); // Mendapatkan materialID dari request GET
 
         if ($id) {
+            // Cek apakah data dengan materialID tertentu ada
+            $check_data = $this->db->get_where('material', ['materialID' => $id])->row_array();
+
             if ($check_data) {
-                $data = $this->materialModel->getMaterialWithMedia('material', ['materialID' => $id])->row_array();
+                // Ambil data material beserta media terkait
+                $data = $this->materialModel->getMaterialWithMedia($id)->row_array();
 
                 $this->response([
                     'status' => true,
@@ -33,10 +63,12 @@ class Materials extends RestController
                 $this->response([
                     'status' => false,
                     'message' => 'Data Tidak Ditemukan'
-                ], 404);
+                ], RestController::HTTP_NOT_FOUND);
             }
         } else {
+            // Jika materialID tidak disediakan, ambil semua data
             $data = $this->materialModel->getMaterialWithMedia()->result();
+
             $this->response([
                 'status' => true,
                 'data' => $data
@@ -45,29 +77,30 @@ class Materials extends RestController
     }
 
 
-    public function material_get()
-    {
 
-        $id = $this->get('materialID');
+    // public function index_get()
+    // {
 
-        $check_data = $this->db->get_where('material', ['materialID' => $id])->row_array();
+    //     $id = $this->get('materialID');
 
-        if ($id) {
-            if ($check_data) {
-                $data = $this->db->get_where('material', ['materialID' => $id])->row_array();
+    //     $check_data = $this->db->get_where('material', ['materialID' => $id])->row_array();
 
-                $this->response($data, RestController::HTTP_OK);
-            } else {
-                $this->response([
-                    'status' => false,
-                    'message' => 'Data Tidak Ditemukan'
-                ], 404);
-            }
-        } else {
-            $data = $this->db->get('material')->result();
-            $this->response($data, RestController::HTTP_OK);
-        }
-    }
+    //     if ($id) {
+    //         if ($check_data) {
+    //             $data = $this->db->get_where('material', ['materialID' => $id])->row_array();
+
+    //             $this->response($data, RestController::HTTP_OK);
+    //         } else {
+    //             $this->response([
+    //                 'status' => false,
+    //                 'message' => 'Data Tidak Ditemukan'
+    //             ], 404);
+    //         }
+    //     } else {
+    //         $data = $this->db->get('material')->result();
+    //         $this->response($data, RestController::HTTP_OK);
+    //     }
+    // }
 
     public function index_post()
     {

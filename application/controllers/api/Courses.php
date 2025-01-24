@@ -12,6 +12,7 @@ class Courses extends RestController
         parent::__construct();
 
         $this->load->model('courseModel');
+        $this->load->model('materialModel');
     }
 
     public function index_get()
@@ -23,7 +24,27 @@ class Courses extends RestController
 
         if ($courseID) {
             if ($check_data) {
-                $data = $this->courseModel->getCourses($courseID)->result();
+                $data = $this->courseModel->getCourses($courseID)->result_array();
+
+                foreach ($data as $key => $value) {
+                    $data[$key]['moduleIDs'] = explode('|', $value['moduleIDs']);
+                    $data[$key]['moduleNames'] = explode('|', $value['moduleNames']);
+                    $data[$key]['moduleDescriptions'] = explode('|', $value['moduleDescriptions']);
+
+                    $data[$key]['modules'] = [];
+                    for ($i = 0; $i < count($data[$key]['moduleIDs']); $i++) {
+                        $data[$key]['modules'][] = [
+                            'moduleID' => $data[$key]['moduleIDs'][$i],
+                            'moduleName' => $data[$key]['moduleNames'][$i],
+                            'moduleDescription' => $data[$key]['moduleDescriptions'][$i],
+                            'materials' => $this->materialModel->getMaterialsByModuleID($data[$key]['moduleIDs'][$i])->result_array()
+                        ];
+                    }
+                }
+
+                unset($data[0]['moduleIDs']);
+                unset($data[0]['moduleNames']);
+                unset($data[0]['moduleDescriptions']);
 
                 $this->response([
                     'status' => true,

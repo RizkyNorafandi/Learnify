@@ -4,7 +4,7 @@
     <div class="container pb-4">
         <header class="py-4">
             <nav
-                class="navbar navbar-expand-lg bg-white mx-auto shadow-sm border <?= (!$this->session->userdata('userEmail')) ? 'login ' : '';?>">
+                class="navbar navbar-expand-lg bg-white mx-auto shadow-sm border <?= (!$this->session->userdata('userEmail')) ? 'login ' : ''; ?>">
                 <div class="container-fluid px-5">
                     <div class="navbar-brand">
                         <img src="<?= base_url('assets/images/logo_with_text.png') ?>" alt="Logo" width="180px" />
@@ -26,18 +26,18 @@
                             </li>
                         </ul>
                         <?php if (!$this->session->userdata('userEmail')): ?>
-                        <div class="navbar-nav-extra d-flex gap-4">
-                            <a class="btn btn-outline-primary" href="<?= base_url('login') ?>">Sign in</a>
-                            <a class="btn btn-primary" href="<?= base_url('register') ?>">Sign Up</a>
-                        </div>
+                            <div class="navbar-nav-extra d-flex gap-4">
+                                <a class="btn btn-outline-primary" href="<?= base_url('login') ?>">Sign in</a>
+                                <a class="btn btn-primary" href="<?= base_url('register') ?>">Sign Up</a>
+                            </div>
                         <?php endif; ?>
 
                         <?php if ($this->session->userdata('userEmail')): ?>
-                        <div class="login d-flex gap-4">
-                            <a class="btn btn-outline-primary" href="<?= base_url('logout') ?>">Log Out</a>
-                            <a class="btn btn-primary" href="<?= base_url('profile') ?>">Profile</a>
+                            <div class="login d-flex gap-4">
+                                <a class="btn btn-outline-primary" href="<?= base_url('logout') ?>">Log Out</a>
+                                <a class="btn btn-primary" href="<?= base_url('profile') ?>">Profile</a>
 
-                        </div>
+                            </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -45,23 +45,23 @@
         </header>
         <div class="row hero-section gy-3 my-3">
             <div class="col-12 col-lg-6">
-                <img class="course-img img-fluid" src="<?= base_url('assets/images/course.jpeg'); ?>"
+                <img class="course-img img-fluid" src="<?= base_url('assets/images/' . $course->courseThumbnail); ?>"
                     alt="Course Banner">
             </div>
             <div class="col-12 col-lg-6 d-flex flex-column justify-content-between py-0 py-lg-2">
                 <div>
-                    <h2><?= $course->courseName ?></h2>
-                    <p><?= $course->courseDescription ?></p>
+                    <h2><?= htmlspecialchars($course->courseName, ENT_QUOTES, 'UTF-8') ?></h2>
+                    <p><?= htmlspecialchars($course->courseDescription, ENT_QUOTES, 'UTF-8') ?></p>
                 </div>
-                <?php if ($course->courseTags): ?>
-                <div class="d-flex gap-3">
-                    <?php 
+                <?php if (!empty($course->courseTags)): ?>
+                    <div class="d-flex gap-3">
+                        <?php
                         $tags = explode(',', $course->courseTags);
-                        foreach($tags as $tag):
-                    ?>
-                    <span class="badge"><?= strtoupper(trim($tag)) ?></span>
-                    <?php endforeach; ?>
-                </div>
+                        foreach ($tags as $tag):
+                        ?>
+                            <span class="badge"><?= strtoupper(trim(htmlspecialchars($tag, ENT_QUOTES, 'UTF-8'))) ?></span>
+                        <?php endforeach; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>
@@ -74,29 +74,22 @@
             <h3>Course Modules</h3>
             <div class="accordion accordion-flush d-flex flex-column gap-4" id="accordionFlushExample">
                 <?php
-                    $moduleIDs = !empty($course->moduleIDs) ? explode('|', $course->moduleIDs) : [];
-                    $moduleNames = !empty($course->moduleNames) ? explode('|', $course->moduleNames) : [];
-                    $moduleDescriptions = !empty($course->moduleDescriptions) ? explode('|', $course->moduleDescriptions) : [];
-                    
 
-                    for ($i = 0; $i < count($moduleIDs); $i++):
-                        $moduleID = $moduleIDs[$i];
-                        $moduleName = $moduleNames[$i];
-                        $moduleDescription = $moduleDescriptions[$i];
-                    ?>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#flush-collapse<?= $moduleID ?>" aria-expanded="false" aria-controls="flush-collapse<?= $moduleID ?>">
-                            <?= $moduleName ?>
-                        </button>
-                    </h2>
-                    <div id="flush-collapse<?= $moduleID ?>" class="accordion-collapse collapse"
-                        data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body"><?= $moduleDescription ?></div>
+                foreach ($course->modules as $module):
+                ?>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#flush-collapse<?= $module->moduleID ?>" aria-expanded="false" aria-controls="flush-collapse<?= $module->moduleID ?>">
+                                <?= htmlspecialchars($module->moduleName, ENT_QUOTES, 'UTF-8') ?>
+                            </button>
+                        </h2>
+                        <div id="flush-collapse<?= $module->moduleID ?>" class="accordion-collapse collapse"
+                            data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body"><?= htmlspecialchars($module->moduleDescription, ENT_QUOTES, 'UTF-8') ?></div>
+                        </div>
                     </div>
-                </div>
-                <?php endfor; ?>
+                <?php endforeach; ?>
             </div>
         </div>
         <div class="col-md-4 text-center">
@@ -105,8 +98,10 @@
                 <p>4 Module, 3 Hours 33 Minutes</p>
                 <p class="fw-bold">Rp. <?= number_format($course->coursePrice, 0, ',', '.') ?></p>
                 <!-- <button class="get-started btn">Get Started!</button> -->
-                <a href="<?= base_url('learning') ?>" class="get-started btn">Get Started!</a>
+                <a href="<?= base_url('learning?courseID=' . $courseID . '&materialID=' . $materialID) ?>" class="btn btn-primary get-started">Get Started!</a>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 </section>

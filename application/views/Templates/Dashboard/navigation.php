@@ -30,10 +30,6 @@
                 <i class="bi bi-box"></i>
                 <span class="ml-4 text-sm">Material</span>
             </a>
-            <a href="<?= site_url('admin/user') ?>" class="flex items-center p-2.5 mt-2 rounded-md px-4 duration-300 hover:bg-blue-600">
-                <i class="bi bi-person-fill"></i>
-                <span class="ml-4 text-sm">User</span>
-            </a>
             <hr class="my-4 border-gray-600">
             <a href="<?= site_url('admin/logout') ?>" class="flex items-center p-2.5 rounded-md px-4 duration-300 hover:bg-blue-600">
                 <i class="bi bi-box-arrow-in-right"></i>

@@ -194,11 +194,11 @@
 <!-- Delete Modal -->
 <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
     <div class="bg-white p-6 rounded-lg w-1/3">
-        <h2 class="text-xl font-bold mb-4">Delete Course</h2>
-        <p class="mb-6 text-gray-600">Are you sure you want to delete this course? This action cannot be undone.</p>
-        <form action="<?= site_url('course/delete') ?>" method="post">
-            <input type="hidden" name="<?= $csrf_token_name; ?>" value="<?= $csrf_hash; ?>" />
-            <input type="hidden" name="courseID" id="modal-delete-courseID">
+        <h2 class="text-xl font-bold mb-4">Delete Module</h2>
+        <p class="mb-6 text-gray-600">Are you sure you want to delete this module? This action cannot be undone.</p>
+        <form action="<?= site_url('dashboard/module/delete') ?>" method="post">
+            <input type="hidden" name="<?= $this->security->get_csrf_token_name(); ?>" value="<?= $this->security->get_csrf_hash(); ?>">
+            <input type="hidden" name="moduleID" id="modal-delete-moduleID">
             <div class="flex justify-center">
                 <button type="button" id="closeDeleteModal" class="text-gray-500 hover:text-gray-700 mr-4">Cancel</button>
                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600">Delete</button>

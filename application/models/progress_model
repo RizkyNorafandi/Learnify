@@ -1,0 +1,16 @@
+<?=
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Progress_model extends CI_Model
+{
+
+    public function markAsComplete($userID, $materialID)
+    {
+        $this->db->where('userID', $userID);
+        $this->db->where('materialID', $materialID);
+        return $this->db->update('progress', ['progressStatus' => 'complete']);
+    }
+}
+
+/* End of file Progress_model.php */
+?>

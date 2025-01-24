@@ -12,7 +12,8 @@ class userModel extends CI_Model
     }
 
     // Fungsi untuk login
-    public function login($email, $password) {
+    public function login($email, $password)
+    {
         $this->db->where('userEmail', $email);
         $query = $this->db->get('user');
 
@@ -34,5 +35,29 @@ class userModel extends CI_Model
     public function get_user_count()
     {
         return $this->db->count_all('user');
+    }
+
+    public function getUser($userID = NULL)
+    {
+        if ($userID) {
+            $this->db->where('userID', $userID);
+            $query = $this->db->get('user');
+            return $query->row();
+        } else {
+            $query = $this->db->get('user');
+            return $query->result();
+        }
+    }
+
+    public function updateUser($userID, $data)
+    {
+        $this->db->where('userID', $userID);
+        return $this->db->update('user', $data);
+    }
+
+    public function deleteUser($userID)
+    {
+        $this->db->where('userID', $userID);
+        return $this->db->delete('user');
     }
 }

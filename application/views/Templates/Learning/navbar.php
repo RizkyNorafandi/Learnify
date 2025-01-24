@@ -9,9 +9,6 @@
     </div>
     <button class="btn-marks-complete complete" onclick="markComplete()">Marks Complete</button>
     <div>
-    <button class="btn btn-secondary" onclick="goToPrevious()">Previous</button>
-    <button class="btn btn-secondary" onclick="goToNext()">Next</button>
     </div>
-  </div>
 </section>
 <!-- Navbar Section End -->
